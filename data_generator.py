@@ -95,10 +95,7 @@ class DataGenerator:
         detection_signal = self.data[f"pmt{detection_channel}"]["y"]
         drops, _ = find_peaks(detection_signal, height=self.thresh)
 
-        if np.any(drops) == False:
-            print('No peaks detected in reference channel')
-
-        else:
+        if np.any(drops) == True:
             # Calculate widths (fwhm) of the peaks to define the time range for each drop
             widths, _, left_ips, right_ips = peak_widths(
                 detection_signal, drops, rel_height=0.5
@@ -120,10 +117,7 @@ class DataGenerator:
                     (excluded_indices, np.arange(int(left), int(right)))
                 )
 
-            if np.any(valid_drop_indices) == False:
-                print('Drops failed validity tests')
-            
-            else:
+            if np.any(valid_drop_indices) == True:
                 # Initialize a dictionary to store the results
                 results = {
                     "channel": [],
