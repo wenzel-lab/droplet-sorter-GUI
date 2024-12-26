@@ -29,9 +29,10 @@ Run with `bokeh serve --show ui_layout.py`
 
 | Dependency | Version |
 |------------|---------|
+| ***python*** | 3.12.3 |
+| ***bokeh*** | 3.4.1 |
 | _libgcc_mutex | 0.1 |
 | _openmp_mutex | 4.5 |
-| **bokeh** | 3.4.1 |
 | bzip2 | 1.0.8 |
 | ca-certificates | 2024.2.2 |
 | colorama | 0.4.6 |
@@ -76,7 +77,6 @@ Run with `bokeh serve --show ui_layout.py`
 | pyserial | 3.5 |
 | python-dateutil | 2.9.0 |
 | python-tzdata | 2024.1 |
-| **python** | 3.12.3 |
 | python_abi | 3.12 |
 | pytz | 2024.1 |
 | pyyaml | 6.0.1 |
