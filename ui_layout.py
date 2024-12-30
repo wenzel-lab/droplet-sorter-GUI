@@ -103,6 +103,9 @@ class UI:
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
         self.GATE_data_points = self._create_custom_GATE_1() #LibreHub
         self.DETECTOR_dropdown = self._create_DETECTOR_dropdown() #LibreHub
+        self.fpga_test_1 = self._create_SIGNAL_test_1() #LibreHub TEST
+        self.fpga_test_2 = self._create_SIGNAL_test_2() #LibreHub TEST
+        self.fpga_test_3 = self._create_SIGNAL_test_3() #LibreHub TEST
         self.DETECTOR_rec_button = self. _create_DETECTOR_button() #LibreHub
         self.SORTING_test_boxes = self._create_SORTING_layout() #LibreHub
         self.SORTING_slider = self._create_SORTING_slider() #LibreHub
@@ -186,7 +189,24 @@ class UI:
                 self.layout_headers[3],#LibreHub
                 column(
                     self.DETECTOR_dropdown, #LibreHub
-                    self.plot,
+                    row(
+                        self.plot,
+                        column(
+                            self.fpga_test_1[0],
+                            self.fpga_test_1[1],
+                            self.fpga_test_1[2],
+                        ),
+                        column(
+                            self.fpga_test_2[0],
+                            self.fpga_test_2[1],
+                            self.fpga_test_2[2],
+                        ),
+                        column(
+                            self.fpga_test_3[0],
+                            self.fpga_test_3[1],
+                            self.fpga_test_3[2],
+                        ),
+                    ),
                     self.DETECTOR_rec_button, #LibreHub
                     row(
                         column(
@@ -774,6 +794,114 @@ class UI:
         self._create_threshold_lines()
 
         return self.plot
+    
+    def _create_SIGNAL_test_1(self): #LibreHub
+        test_boxes_info = [
+            {
+                "title" : "Test 1",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [60,30,20,30],
+            },
+            {
+                "title" : "Test 2",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [20,30,20,30],
+            },
+            {
+                "title" : "Test 3",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [20,30,20,30],
+            },
+        ]
+
+        self.test_boxes_1 = []
+        for test_box_info in test_boxes_info:
+            test_widget = TextInput(
+                title = test_box_info["title"],
+                value = test_box_info["value"],
+                width = test_box_info["width"],
+                margin = test_box_info["margin"],
+                disabled = True,
+            )
+            #dropdown_widget.on_change("value",dropdown_box_info["callback"])
+            self.test_boxes_1.append(test_widget)
+
+        return self.test_boxes_1
+    
+    def _create_SIGNAL_test_2(self): #LibreHub
+        test_boxes_info = [
+            {
+                "title" : "Test 4",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [60,30,20,30],
+            },
+            {
+                "title" : "Test 5",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [20,30,20,30],
+            },
+            {
+                "title" : "Test 6",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [20,30,20,30],
+            },
+        ]
+
+        self.test_boxes_2 = []
+        for test_box_info in test_boxes_info:
+            test_widget = TextInput(
+                title = test_box_info["title"],
+                value = test_box_info["value"],
+                width = test_box_info["width"],
+                margin = test_box_info["margin"],
+                disabled = True,
+            )
+            #dropdown_widget.on_change("value",dropdown_box_info["callback"])
+            self.test_boxes_2.append(test_widget)
+
+        return self.test_boxes_2
+    
+    def _create_SIGNAL_test_3(self): #LibreHub
+        test_boxes_info = [
+            {
+                "title" : "Test 7",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [60,30,20,30],
+            },
+            {
+                "title" : "Test 8",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [20,30,20,30],
+            },
+            {
+                "title" : "Test 9",
+                "value" : "0", #Attach variable here or make a callback
+                "width" : 100,
+                "margin" : [20,30,20,30],
+            },
+        ]
+
+        self.test_boxes_3 = []
+        for test_box_info in test_boxes_info:
+            test_widget = TextInput(
+                title = test_box_info["title"],
+                value = test_box_info["value"],
+                width = test_box_info["width"],
+                margin = test_box_info["margin"],
+                disabled = True,
+            )
+            #dropdown_widget.on_change("value",dropdown_box_info["callback"])
+            self.test_boxes_3.append(test_widget)
+
+        return self.test_boxes_3
 
     def _create_threshold_lines(self):
         self.thresh_line = Span(
@@ -1321,44 +1449,84 @@ class UI:
             root.withdraw()
 
             # Prompt the user to select a save location
-            file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
+            file_path = filedialog.asksaveasfilename(filetypes=[("CSV files", "*.csv"), ("JSON files", "*.json")])
 
-            if file_path:    
-                # Convert the data to DataFrames and dictionaries
-                df_0 = pd.DataFrame(backup_0.data)
-                df_1 = pd.DataFrame(backup_1.data)
-                df_2 = pd.DataFrame(backup_2.data)
-                df_3 = backup_3
-                df_4 = str(backup_4)
-                df_5 = [backup_5[0], backup_6[0]]
-                df_6 = [backup_5[1], backup_6[1]]
-                df_7 = [backup_5[2], backup_6[2]]
+            if file_path:
+                if file_path.endswith(".json"):    
+                    # Convert the data to DataFrames and dictionaries
+                    df_0 = pd.DataFrame(backup_0.data)
+                    df_1 = pd.DataFrame(backup_1.data)
+                    df_2 = pd.DataFrame(backup_2.data)
+                    df_3 = backup_3
+                    df_4 = str(backup_4)
+                    df_5 = [backup_5[0], backup_6[0]]
+                    df_6 = [backup_5[1], backup_6[1]]
+                    df_7 = [backup_5[2], backup_6[2]]
 
-                # Create the data dictionary to be saved as JSON
-                data = {
-                    "FADS Input": {
-                        "Laser 488 Power": df_5,
-                        "Laser 638 Power": df_6,
-                        "Laser 405 Power": df_7,
-                        "PMT1 Gain": df_3[0],
-                        "PMT2 Gain": df_3[1],
-                        "PMT1 Threshold": df_3[2],
-                        "Scatter Plot Max Events": df_4
-                    },
-                    "PMT1 DataFrame": df_1.to_dict(orient="records"),
-                    "PMT2 DataFrame": df_2.to_dict(orient="records"),
-                    "Dot Plot DataFrame": df_0.to_dict(orient="records")
-                }
+                    # Create the data dictionary to be saved as JSON
+                    data = {
+                        "FADS Input": {
+                            "Laser 488 Power": df_5,
+                            "Laser 638 Power": df_6,
+                            "Laser 405 Power": df_7,
+                            "SiPM_1 Gain": df_3[0],
+                            "SiPM_2 Gain": df_3[1],
+                            "SiPM Threshold": df_3[2],
+                            "Scatter Plot Max Events": df_4
+                        },
+                        "SiPM_1 DataFrame": df_1.to_dict(orient="records"),
+                        "SiPM_2 DataFrame": df_2.to_dict(orient="records"),
+                        "Dot Plot DataFrame": df_0.to_dict(orient="records")
+                    }
 
-                try:
-                    # Save the data dictionary as JSON to the selected file
-                    with open(file_path, "w") as f_output:
-                        json.dump(data, f_output, indent=4)
-                except Exception as e:
-                    print(f"An error occurred while saving the file: {e}")
+                    try:
+                        # Save the data dictionary as JSON to the selected file
+                        with open(file_path, "w") as f_output:
+                            json.dump(data, f_output, indent=4)
+                    except Exception as e:
+                        print(f"An error occurred while saving the file: {e}")
+
+                elif file_path.endswith(".csv"):
+                    try:
+                        # Convert the data to DataFrames
+                        df_0 = pd.DataFrame(backup_0.data)
+                        df_1 = pd.DataFrame(backup_1.data)
+                        df_2 = pd.DataFrame(backup_2.data)
+
+                        # Rename the columns of the DataFrames
+                        df_0 = df_0.rename(columns={"x": "AUC_1", "y": "AUC_2", "density": "Density"})
+                        df_1 = df_1.rename(columns={"x": "Time", "y": "SiPM_1"})
+                        df_2 = df_2.rename(columns={"x": "Time", "y": "SiPM_2"})
+
+                        # Create a header dictionary
+                        header = [
+                            "Laser 488 Power: " + str(backup_5[0]),
+                            "Laser 638 Power: " + str(backup_5[1]),
+                            "Laser 405 Power: " + str(backup_5[2]),
+                            "SiPM_1 Gain: " + str(backup_3[0]),
+                            "SiPM_2 Gain: " + str(backup_3[1]),
+                            "SiPM Threshold: " + str(backup_3[2]),
+                            "Scatter Plot Max Events: " + str(backup_4) + "\n"
+                        ]
+
+                        # Define a function to write the header and DataFrame to a CSV file
+                        def write_csv_with_header(df, file_path, header):
+                            with open(file_path, "w") as f:
+                                for line in header:
+                                    f.write(line + "\n")
+                                df.to_csv(f, index=False)
+
+                        # Save each DataFrame to a separate CSV file with header
+                        write_csv_with_header(df_0, file_path.replace(".csv", "_dot_plot.csv"), header)
+                        write_csv_with_header(df_1, file_path.replace(".csv", "_sipm_1.csv"), header)
+                        write_csv_with_header(df_2, file_path.replace(".csv", "_sipm_2.csv"), header)
+                    except Exception as e:
+                        print(f"An error occurred while saving the file: {e}")
+                else:
+                    print("Unsupported file format selected.")
             else:
                 print("No file selected.")
-
+    
     def _toggle_changed(self, state):
         with self.dg_lock:
             if state:
