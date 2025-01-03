@@ -236,4 +236,8 @@ if __name__ == "__main__":
     dg = DataGenerator()
     dg.start_generating()
     input()
+    dg.pause_generating()
+    input()
+    dg.resume_generating()
+    input()
     dg.stop_generating()
