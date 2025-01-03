@@ -5,6 +5,7 @@ import concurrency_tools as ct
 from scipy.signal import find_peaks, peak_widths
 from scipy.integrate import simps
 from scipy.stats import gaussian_kde
+import time
 
 
 class DataGenerator:
@@ -25,6 +26,9 @@ class DataGenerator:
         self.data = {"pmt1": {"x": [0], "y": [0]}, "pmt2": {"x": [0], "y": [0]}}
         self.data2d = {"x": [0], "y": [0], "density": [0]}
         self._generate = False
+        self._pause = False
+        self._lock = threading.Lock()
+        self._pause_cond = threading.Condition(self._lock)
         self.gain = [0.5, 0.5]
         self.thresh = 0.03
         self.gate_val = {"x0": [0], "y0": [0], "x1": [0], "y1": [0]}
@@ -33,20 +37,34 @@ class DataGenerator:
 
     def start_generating(self):
         self._generate = True
+        self._pause = False
         self._thread = threading.Thread(target=self._continue_generating)
         self._thread.start()
 
     def stop_generating(self):
-        self._generate = False
-        if hasattr(self, "_thread"):
-            self._thread.join()
+        with self._lock:
+            self._generate = False
+            self._pause_cond.notify_all()
+        self._thread.join()
+
+    def pause_generating(self):
+        with self._lock:
+            self._pause = True
+
+    def resume_generating(self):
+        with self._lock:
+            self._pause = False
+            self._pause_cond.notify_all()
 
     def _continue_generating(self):
         while True:
-            if not self._generate:
-                return
-            self._generate_signal()
-            self._analyze_drops()
+            with self._lock:
+                if not self._generate:
+                    break
+                if self._pause:
+                    self._pause_cond.wait()
+            self._generate_data()
+            time.sleep(self.SAMPLING_INTERVAL)
 
     """ Generate Test PMT Signals """
 
