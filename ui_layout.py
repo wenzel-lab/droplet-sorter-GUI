@@ -49,12 +49,11 @@ class UI:
 
     def _init_ui(self):
         # Initialize UI components
-        with self.dg_lock:
-            self.doc = curdoc()
-            self.timers = np.zeros(100)
-            self._setup_data_sources()
-            self._setup_ui_components()
-            self.doc.add_periodic_callback(self.update_ui, 150)  # update ui every 150ms
+        self.doc = curdoc()
+        self.timers = np.zeros(100)
+        self._setup_data_sources()
+        self._setup_ui_components()
+        self.doc.add_periodic_callback(self.update_ui, 150)  # update ui every 150ms
 
     """ Datasource Setup Methods """
 
