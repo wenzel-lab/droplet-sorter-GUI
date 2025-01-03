@@ -42,7 +42,6 @@ class UI:
     def _init_hardware(self):
         # Create an instance of the hardware class that will run in a separate process.
         self.dg = ct.ObjectInSubprocess(DataGenerator)
-        self.dg_lock = threading.Lock()
 
     def _init_COM(self): # There is a hint in the SQUID script, main or setup I think where it shows how to enable COM ports. LibreHub
         self.serial_manager = SerialManager("/dev/ttyUSB0") #ttyUSB0, fix permissions
