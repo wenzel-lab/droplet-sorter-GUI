@@ -1111,103 +1111,99 @@ class UI:
 
     """ Callback Methods """
     def initialize_serial_toggle(self): #Something is delaying the toggle when Laser is disconnected. Delaying may come from spamming instructions from Slider, consider creating customJS. LibreHub
-        with self.dg_lock:
-            if self.serial_manager.serial_connection is None:
-                self._update_log("> [console]: ERROR, No COM port communication.")
-                self.call_LASER_1_status_sign.button_type = "warning"
-                self.call_LASER_2_status_sign.button_type = "warning"
-                self.call_LASER_3_status_sign.button_type = "warning"
+        if self.serial_manager.serial_connection is None:
+            self._update_log("> [console]: ERROR, No COM port communication.")
+            self.call_LASER_1_status_sign.button_type = "warning"
+            self.call_LASER_2_status_sign.button_type = "warning"
+            self.call_LASER_3_status_sign.button_type = "warning"
+        else:
+            if self.init_COM_toggle.button_type == "primary":
+                self.init_COM_toggle.button_type = "success"
+                self._update_log("> [console]: COM communication established.")
+                self.custom_COM_1.visible = True
+                self.custom_COM_2.visible = True
+                self.custom_COM_3.visible = True
+                self.call_LASER_1_status_sign.button_type = "danger"
+                self.COM_statuses[0].visible = True
+                self.call_LASER_2_status_sign.button_type = "danger"
+                self.COM_statuses[1].visible = True
+                self.call_LASER_3_status_sign.button_type = "danger"
+                self.COM_statuses[2].visible = True
             else:
-                if self.init_COM_toggle.button_type == "primary":
-                    self.init_COM_toggle.button_type = "success"
-                    self._update_log("> [console]: COM communication established.")
-                    self.custom_COM_1.visible = True
-                    self.custom_COM_2.visible = True
-                    self.custom_COM_3.visible = True
-                    self.call_LASER_1_status_sign.button_type = "danger"
-                    self.COM_statuses[0].visible = True
-                    self.call_LASER_2_status_sign.button_type = "danger"
-                    self.COM_statuses[1].visible = True
-                    self.call_LASER_3_status_sign.button_type = "danger"
-                    self.COM_statuses[2].visible = True
-                else:
-                    self.init_COM_toggle.button_type = "primary"
-                    self._update_log("> [console]: COM communication disconnected.")
-                    self.call_LASER_1_status_sign.button_type = "default"
-                    self.serial_manager.set_ch_light_state(1,0)
-                    self.call_LASER_2_status_sign.button_type = "default"
-                    self.serial_manager.set_ch_light_state(2,0)
-                    self.call_LASER_3_status_sign.button_type = "default"
-                    self.serial_manager.set_ch_light_state(3,0)
-                    self.serial_manager.set_ch_power_reference(1, 0.5)
-                    self.serial_manager.set_ch_power_reference(2, 0.5)
-                    self.serial_manager.set_ch_power_reference(3, 0.5)
-                    self.laser_sliders[0].disabled = True
-                    self.laser_sliders[1].disabled = True
-                    self.laser_sliders[2].disabled = True
+                self.init_COM_toggle.button_type = "primary"
+                self._update_log("> [console]: COM communication disconnected.")
+                self.call_LASER_1_status_sign.button_type = "default"
+                self.serial_manager.set_ch_light_state(1,0)
+                self.call_LASER_2_status_sign.button_type = "default"
+                self.serial_manager.set_ch_light_state(2,0)
+                self.call_LASER_3_status_sign.button_type = "default"
+                self.serial_manager.set_ch_light_state(3,0)
+                self.serial_manager.set_ch_power_reference(1, 0.5)
+                self.serial_manager.set_ch_power_reference(2, 0.5)
+                self.serial_manager.set_ch_power_reference(3, 0.5)
+                self.laser_sliders[0].disabled = True
+                self.laser_sliders[1].disabled = True
+                self.laser_sliders[2].disabled = True
 
     def show_and_toggle_LASER_1_status(self): #LibreHub
-        with self.dg_lock:
-            if self.init_COM_toggle.button_type == "success":
-                #Laser 1 status
-                ch1_light_state = self.serial_manager.get_ch1_light_state()
-                if int(ch1_light_state) == 0:
-                    self.serial_manager.set_ch_light_state(1,1)
-                    self.call_LASER_1_status_sign.button_type = "success"
-                    self.call_LASER_1_status_sign.label = "488"
-                    self._update_log("> [console]: LASER 1 ON.")
-                    self.laser_sliders[0].disabled = False
+        if self.init_COM_toggle.button_type == "success":
+            #Laser 1 status
+            ch1_light_state = self.serial_manager.get_ch1_light_state()
+            if int(ch1_light_state) == 0:
+                self.serial_manager.set_ch_light_state(1,1)
+                self.call_LASER_1_status_sign.button_type = "success"
+                self.call_LASER_1_status_sign.label = "488"
+                self._update_log("> [console]: LASER 1 ON.")
+                self.laser_sliders[0].disabled = False
 
-                else:
-                    self.serial_manager.set_ch_light_state(1,0)
-                    self.call_LASER_1_status_sign.button_type = "danger"
-                    self.call_LASER_1_status_sign.label = "488"
-                    self._update_log("> [console]: LASER 1 OFF.")
-                    self.laser_sliders[0].disabled = True
             else:
-                self._update_log("> [console]: NO CONNECTION (LASER 1)")
+                self.serial_manager.set_ch_light_state(1,0)
+                self.call_LASER_1_status_sign.button_type = "danger"
+                self.call_LASER_1_status_sign.label = "488"
+                self._update_log("> [console]: LASER 1 OFF.")
+                self.laser_sliders[0].disabled = True
+        else:
+            self._update_log("> [console]: NO CONNECTION (LASER 1)")
 
     def show_and_toggle_LASER_2_status(self): #LibreHub
-        with self.dg_lock:
-            if self.init_COM_toggle.button_type == "success":
-                #Laser 2 status
-                ch2_light_state = self.serial_manager.get_ch2_light_state()
-                if int(ch2_light_state) == 0:
-                    self.serial_manager.set_ch_light_state(2,1)
-                    self.call_LASER_2_status_sign.button_type = "success"
-                    self.call_LASER_2_status_sign.label = "638"
-                    self._update_log("> [console]: LASER 2 ON.")
-                    self.laser_sliders[1].disabled = False
+        if self.init_COM_toggle.button_type == "success":
+            #Laser 2 status
+            ch2_light_state = self.serial_manager.get_ch2_light_state()
+            if int(ch2_light_state) == 0:
+                self.serial_manager.set_ch_light_state(2,1)
+                self.call_LASER_2_status_sign.button_type = "success"
+                self.call_LASER_2_status_sign.label = "638"
+                self._update_log("> [console]: LASER 2 ON.")
+                self.laser_sliders[1].disabled = False
 
-                else:
-                    self.serial_manager.set_ch_light_state(2,0)
-                    self.call_LASER_2_status_sign.button_type = "danger"
-                    self.call_LASER_2_status_sign.label = "638"
-                    self._update_log("> [console]: LASER 2 OFF.")
-                    self.laser_sliders[1].disabled = True
             else:
-                self._update_log("> [console]: NO CONNECTION (LASER 2).")
+                self.serial_manager.set_ch_light_state(2,0)
+                self.call_LASER_2_status_sign.button_type = "danger"
+                self.call_LASER_2_status_sign.label = "638"
+                self._update_log("> [console]: LASER 2 OFF.")
+                self.laser_sliders[1].disabled = True
+        else:
+            self._update_log("> [console]: NO CONNECTION (LASER 2).")
 
     def show_and_toggle_LASER_3_status(self): #LibreHub
-        with self.dg_lock:
-            if self.init_COM_toggle.button_type == "success":
-                #Laser 3 status
-                ch3_light_state = self.serial_manager.get_ch3_light_state()
-                if int(ch3_light_state) == 0:
-                    self.serial_manager.set_ch_light_state(3,1)
-                    self.call_LASER_3_status_sign.button_type = "success"
-                    self.call_LASER_3_status_sign.label = "405"
-                    self._update_log("> [console]: LASER 3 ON.")
-                    self.laser_sliders[2].disabled = False
+        if self.init_COM_toggle.button_type == "success":
+            #Laser 3 status
+            ch3_light_state = self.serial_manager.get_ch3_light_state()
+            if int(ch3_light_state) == 0:
+                self.serial_manager.set_ch_light_state(3,1)
+                self.call_LASER_3_status_sign.button_type = "success"
+                self.call_LASER_3_status_sign.label = "405"
+                self._update_log("> [console]: LASER 3 ON.")
+                self.laser_sliders[2].disabled = False
 
-                else:
-                    self.serial_manager.set_ch_light_state(3,0)
-                    self.call_LASER_3_status_sign.button_type = "danger"
-                    self.call_LASER_3_status_sign.label = "405"
-                    self._update_log("> [console]: LASER 3 OFF.")
-                    self.laser_sliders[2].disabled = True
             else:
-                self._update_log("> [console]: NO CONNECTION (LASER 3).")
+                self.serial_manager.set_ch_light_state(3,0)
+                self.call_LASER_3_status_sign.button_type = "danger"
+                self.call_LASER_3_status_sign.label = "405"
+                self._update_log("> [console]: LASER 3 OFF.")
+                self.laser_sliders[2].disabled = True
+        else:
+            self._update_log("> [console]: NO CONNECTION (LASER 3).")
 
     def _schedule_update_slider_1(self, attr, old, new):
         if self.timer is not None:
@@ -1219,16 +1215,15 @@ class UI:
         curdoc().add_next_tick_callback(self._set_slider_1_power)
     
     def _set_slider_1_power(self): # min 0.3 y max 45 mW. LibreHub
-        with self.dg_lock:
-            if self.init_COM_toggle.button_type == "success":
-                try:
-                    power = float(self.laser_sliders[0].value)
-                    self.serial_manager.set_ch_power_reference(1, power)
-                    self._update_log(f"> [console]: LASER 1 power slider set to {power} [mW].")
-                except ValueError:
-                    print("Invalid power value.")
-            else:
-                self._update_log("> [console]: NO CONNECTION (LASER_PW_SLIDER_1).")
+        if self.init_COM_toggle.button_type == "success":
+            try:
+                power = float(self.laser_sliders[0].value)
+                self.serial_manager.set_ch_power_reference(1, power)
+                self._update_log(f"> [console]: LASER 1 power slider set to {power} [mW].")
+            except ValueError:
+                print("Invalid power value.")
+        else:
+            self._update_log("> [console]: NO CONNECTION (LASER_PW_SLIDER_1).")
 
     def _schedule_update_slider_2(self, attr, old, new):
         if self.timer is not None:
@@ -1240,16 +1235,15 @@ class UI:
         curdoc().add_next_tick_callback(self._set_slider_2_power)
 
     def _set_slider_2_power(self): # min 0.3 y max 45 mW. LibreHub
-        with self.dg_lock:
-            if self.init_COM_toggle.button_type == "success":
-                try:
-                    power = float(self.laser_sliders[1].value)
-                    self.serial_manager.set_ch_power_reference(2, power)
-                    self._update_log(f"> [console]: LASER 2 power slider set to {power} [mW].")
-                except ValueError:
-                    print("Invalid power value.")
-            else:
-                self._update_log("> [console]: NO CONNECTION (LASER_PW_SLIDER_2).")
+        if self.init_COM_toggle.button_type == "success":
+            try:
+                power = float(self.laser_sliders[1].value)
+                self.serial_manager.set_ch_power_reference(2, power)
+                self._update_log(f"> [console]: LASER 2 power slider set to {power} [mW].")
+            except ValueError:
+                print("Invalid power value.")
+        else:
+            self._update_log("> [console]: NO CONNECTION (LASER_PW_SLIDER_2).")
 
     def _schedule_update_slider_3(self, attr, old, new):
         if self.timer is not None:
@@ -1261,16 +1255,15 @@ class UI:
         curdoc().add_next_tick_callback(self._set_slider_3_power)
     
     def _set_slider_3_power(self): # min 0.3 y max 45 mW. LibreHub
-        with self.dg_lock:
-            if self.init_COM_toggle.button_type == "success":
-                try:
-                    power = float(self.laser_sliders[2].value)
-                    self.serial_manager.set_ch_power_reference(3, power)
-                    self._update_log(f"> [console]: LASER 3 power slider set to {power} [mW].")
-                except ValueError:
-                    print("Invalid power value.")
-            else:
-                self._update_log("> [console]: NO CONNECTION (LASER_PW_SLIDER_3).")
+        if self.init_COM_toggle.button_type == "success":
+            try:
+                power = float(self.laser_sliders[2].value)
+                self.serial_manager.set_ch_power_reference(3, power)
+                self._update_log(f"> [console]: LASER 3 power slider set to {power} [mW].")
+            except ValueError:
+                print("Invalid power value.")
+        else:
+            self._update_log("> [console]: NO CONNECTION (LASER_PW_SLIDER_3).")
 
     def _set_power_box_1(self, attr, old, new): # min 0.3 y max 45 mW. LibreHub    
         if self.init_COM_toggle.button_type == "success":
@@ -1334,225 +1327,214 @@ class UI:
         self.dynamic_widgets_container.children.append(self.dynamic_widgets_unit)
 
     def _remove_widget(self): #LibreHub
-        with self.dg_lock:
-            if self.dynamic_widgets_container.children:
-                plot_id = f"plot_{self.add_counter - 1}"
-                if plot_id in self.sub_plots_source:
-                    # Clear the data source by setting all columns to empty lists
-                    self.sub_plots_source[plot_id].data = {"x": [], "y": [], "density": []}
-                    # Remove the data source from the dictionary
-                    del self.sub_plots_source[plot_id]
-                    # Remove the plot from the dictionary
-                    del self.sub_plots_dic[plot_id]
-                self.dynamic_widgets_container.children.pop()
-                self.add_counter -= 1
+        if self.dynamic_widgets_container.children:
+            plot_id = f"plot_{self.add_counter - 1}"
+            if plot_id in self.sub_plots_source:
+                # Clear the data source by setting all columns to empty lists
+                self.sub_plots_source[plot_id].data = {"x": [], "y": [], "density": []}
+                # Remove the data source from the dictionary
+                del self.sub_plots_source[plot_id]
+                # Remove the plot from the dictionary
+                del self.sub_plots_dic[plot_id]
+            self.dynamic_widgets_container.children.pop()
+            self.add_counter -= 1
         
     def _reset_button_clicked(self): #LibreHub
         #Solved with variable status self.no_update.
-        with self.dg_lock:
-            self.no_update = 1
-            self.div_box_reset = 1
-            
-            self.GATE_data_points.value = "0"
-            #Clean plot_0
-            #Source
-            for key in self.rolling_source_2d:
-                self.rolling_source_2d[key] = [np.nan]
-            self.source_2d.data = {key: [] for key in self.source_2d.data}
-            #Coordinates
-            self.custom_div.text = self._create_divhtml()
+        self.no_update = 1
+        self.div_box_reset = 1
+        
+        self.GATE_data_points.value = "0"
+        #Clean plot_0
+        #Source
+        for key in self.rolling_source_2d:
+            self.rolling_source_2d[key] = [np.nan]
+        self.source_2d.data = {key: [] for key in self.source_2d.data}
+        #Coordinates
+        self.custom_div.text = self._create_divhtml()
 
-            #Clean dynamic plots
-            # Source
-            if self.dynamic_widgets_container.children:
-                plot_keys = list(self.sub_plots_source.keys())
-                for dyn_plot_source in plot_keys:
-                    # Clear the data source by setting all columns to empty lists
-                    self.sub_plots_source[dyn_plot_source].data = {"x": [], "y": [], "density": []}
-            #Coordinates
-            for p1 in range(len(self.dynamic_widgets_container.children)):
-                self.div_box_reset = 1
-                self.dynamic_widgets_container.children[p1].children[0].text = self._create_sub_divhtml()
+        #Clean dynamic plots
+        # Source
+        if self.dynamic_widgets_container.children:
+            plot_keys = list(self.sub_plots_source.keys())
+            for dyn_plot_source in plot_keys:
+                # Clear the data source by setting all columns to empty lists
+                self.sub_plots_source[dyn_plot_source].data = {"x": [], "y": [], "density": []}
+        #Coordinates
+        for p1 in range(len(self.dynamic_widgets_container.children)):
+            self.div_box_reset = 1
+            self.dynamic_widgets_container.children[p1].children[0].text = self._create_sub_divhtml()
 
     def _save_button_clicked_1(self): #LibreHub
-        with self.dg_lock:
-            custom_console_log = self.custom_COM_1.text
-            
-            # Hide the root window
-            root = Tk()
-            root.withdraw()
+        custom_console_log = self.custom_COM_1.text
+        
+        # Hide the root window
+        root = Tk()
+        root.withdraw()
 
-            # Prompt the user to select a save location
-            file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
-            
-            if file_path:
-                try:
-                    # Write the console log to the selected file
-                    with open(file_path, "w") as f_output:
-                        f_output.write(custom_console_log)
-                except Exception as e:
-                    print(f"An error ocurred while saving the file: {e}")
-            else:
-                print("No file selected.")
+        # Prompt the user to select a save location
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        
+        if file_path:
+            try:
+                # Write the console log to the selected file
+                with open(file_path, "w") as f_output:
+                    f_output.write(custom_console_log)
+            except Exception as e:
+                print(f"An error ocurred while saving the file: {e}")
+        else:
+            print("No file selected.")
 
     def _save_button_clicked_2(self): #LibreHub
-        with self.dg_lock:
-            # Backup the necessary data before saving
-            backup_0 = self.source_2d
-            backup_1 = self.source_PMT1
-            backup_2 = self.source_PMT2
-            backup_3 = [self.sliders[0].value, self.sliders[1].value, self.sliders[2].value]
-            backup_4 = self.bufferspinner.value
-            backup_5 = [self.laser_boxes[0].value, self.laser_boxes[1].value, self.laser_boxes[2].value]
-            backup_6 = [self.laser_sliders[0].value, self.laser_sliders[1].value, self.laser_sliders[2].value]
-            
-            # Hide the root window
-            root = Tk()
-            root.withdraw()
+        # Backup the necessary data before saving
+        backup_0 = self.source_2d
+        backup_1 = self.source_PMT1
+        backup_2 = self.source_PMT2
+        backup_3 = [self.sliders[0].value, self.sliders[1].value, self.sliders[2].value]
+        backup_4 = self.bufferspinner.value
+        backup_5 = [self.laser_boxes[0].value, self.laser_boxes[1].value, self.laser_boxes[2].value]
+        backup_6 = [self.laser_sliders[0].value, self.laser_sliders[1].value, self.laser_sliders[2].value]
+        
+        # Hide the root window
+        root = Tk()
+        root.withdraw()
 
-            # Prompt the user to select a save location
-            file_path = filedialog.asksaveasfilename(filetypes=[("CSV files", "*.csv"), ("JSON files", "*.json")])
+        # Prompt the user to select a save location
+        file_path = filedialog.asksaveasfilename(filetypes=[("CSV files", "*.csv"), ("JSON files", "*.json")])
 
-            if file_path:
-                if file_path.endswith(".json"):    
-                    # Convert the data to DataFrames and dictionaries
+        if file_path:
+            if file_path.endswith(".json"):    
+                # Convert the data to DataFrames and dictionaries
+                df_0 = pd.DataFrame(backup_0.data)
+                df_1 = pd.DataFrame(backup_1.data)
+                df_2 = pd.DataFrame(backup_2.data)
+                df_3 = backup_3
+                df_4 = str(backup_4)
+                df_5 = [backup_5[0], backup_6[0]]
+                df_6 = [backup_5[1], backup_6[1]]
+                df_7 = [backup_5[2], backup_6[2]]
+
+                # Create the data dictionary to be saved as JSON
+                data = {
+                    "FADS Input": {
+                        "Laser 488 Power": df_5,
+                        "Laser 638 Power": df_6,
+                        "Laser 405 Power": df_7,
+                        "SiPM_1 Gain": df_3[0],
+                        "SiPM_2 Gain": df_3[1],
+                        "SiPM Threshold": df_3[2],
+                        "Scatter Plot Max Events": df_4
+                    },
+                    "SiPM_1 DataFrame": df_1.to_dict(orient="records"),
+                    "SiPM_2 DataFrame": df_2.to_dict(orient="records"),
+                    "Dot Plot DataFrame": df_0.to_dict(orient="records")
+                }
+
+                try:
+                    # Save the data dictionary as JSON to the selected file
+                    with open(file_path, "w") as f_output:
+                        json.dump(data, f_output, indent=4)
+                except Exception as e:
+                    print(f"An error occurred while saving the file: {e}")
+
+            elif file_path.endswith(".csv"):
+                try:
+                    # Convert the data to DataFrames
                     df_0 = pd.DataFrame(backup_0.data)
                     df_1 = pd.DataFrame(backup_1.data)
                     df_2 = pd.DataFrame(backup_2.data)
-                    df_3 = backup_3
-                    df_4 = str(backup_4)
-                    df_5 = [backup_5[0], backup_6[0]]
-                    df_6 = [backup_5[1], backup_6[1]]
-                    df_7 = [backup_5[2], backup_6[2]]
 
-                    # Create the data dictionary to be saved as JSON
-                    data = {
-                        "FADS Input": {
-                            "Laser 488 Power": df_5,
-                            "Laser 638 Power": df_6,
-                            "Laser 405 Power": df_7,
-                            "SiPM_1 Gain": df_3[0],
-                            "SiPM_2 Gain": df_3[1],
-                            "SiPM Threshold": df_3[2],
-                            "Scatter Plot Max Events": df_4
-                        },
-                        "SiPM_1 DataFrame": df_1.to_dict(orient="records"),
-                        "SiPM_2 DataFrame": df_2.to_dict(orient="records"),
-                        "Dot Plot DataFrame": df_0.to_dict(orient="records")
-                    }
+                    # Rename the columns of the DataFrames
+                    df_0 = df_0.rename(columns={"x": "AUC_1", "y": "AUC_2", "density": "Density"})
+                    df_1 = df_1.rename(columns={"x": "Time", "y": "SiPM_1"})
+                    df_2 = df_2.rename(columns={"x": "Time", "y": "SiPM_2"})
 
-                    try:
-                        # Save the data dictionary as JSON to the selected file
-                        with open(file_path, "w") as f_output:
-                            json.dump(data, f_output, indent=4)
-                    except Exception as e:
-                        print(f"An error occurred while saving the file: {e}")
+                    # Create a header dictionary
+                    header = [
+                        "Laser 488 Power: " + str(backup_5[0]),
+                        "Laser 638 Power: " + str(backup_5[1]),
+                        "Laser 405 Power: " + str(backup_5[2]),
+                        "SiPM_1 Gain: " + str(backup_3[0]),
+                        "SiPM_2 Gain: " + str(backup_3[1]),
+                        "SiPM Threshold: " + str(backup_3[2]),
+                        "Scatter Plot Max Events: " + str(backup_4) + "\n"
+                    ]
 
-                elif file_path.endswith(".csv"):
-                    try:
-                        # Convert the data to DataFrames
-                        df_0 = pd.DataFrame(backup_0.data)
-                        df_1 = pd.DataFrame(backup_1.data)
-                        df_2 = pd.DataFrame(backup_2.data)
+                    # Define a function to write the header and DataFrame to a CSV file
+                    def write_csv_with_header(df, file_path, header):
+                        with open(file_path, "w") as f:
+                            for line in header:
+                                f.write(line + "\n")
+                            df.to_csv(f, index=False)
 
-                        # Rename the columns of the DataFrames
-                        df_0 = df_0.rename(columns={"x": "AUC_1", "y": "AUC_2", "density": "Density"})
-                        df_1 = df_1.rename(columns={"x": "Time", "y": "SiPM_1"})
-                        df_2 = df_2.rename(columns={"x": "Time", "y": "SiPM_2"})
-
-                        # Create a header dictionary
-                        header = [
-                            "Laser 488 Power: " + str(backup_5[0]),
-                            "Laser 638 Power: " + str(backup_5[1]),
-                            "Laser 405 Power: " + str(backup_5[2]),
-                            "SiPM_1 Gain: " + str(backup_3[0]),
-                            "SiPM_2 Gain: " + str(backup_3[1]),
-                            "SiPM Threshold: " + str(backup_3[2]),
-                            "Scatter Plot Max Events: " + str(backup_4) + "\n"
-                        ]
-
-                        # Define a function to write the header and DataFrame to a CSV file
-                        def write_csv_with_header(df, file_path, header):
-                            with open(file_path, "w") as f:
-                                for line in header:
-                                    f.write(line + "\n")
-                                df.to_csv(f, index=False)
-
-                        # Save each DataFrame to a separate CSV file with header
-                        write_csv_with_header(df_0, file_path.replace(".csv", "_dot_plot.csv"), header)
-                        write_csv_with_header(df_1, file_path.replace(".csv", "_sipm_1.csv"), header)
-                        write_csv_with_header(df_2, file_path.replace(".csv", "_sipm_2.csv"), header)
-                    except Exception as e:
-                        print(f"An error occurred while saving the file: {e}")
-                else:
-                    print("Unsupported file format selected.")
+                    # Save each DataFrame to a separate CSV file with header
+                    write_csv_with_header(df_0, file_path.replace(".csv", "_dot_plot.csv"), header)
+                    write_csv_with_header(df_1, file_path.replace(".csv", "_sipm_1.csv"), header)
+                    write_csv_with_header(df_2, file_path.replace(".csv", "_sipm_2.csv"), header)
+                except Exception as e:
+                    print(f"An error occurred while saving the file: {e}")
             else:
-                print("No file selected.")
+                print("Unsupported file format selected.")
+        else:
+            print("No file selected.")
     
     def _toggle_changed(self, state):
-        with self.dg_lock:
-            if state:
-                self.toggle.label = "Collecting"
-                self.toggle.button_type = "success"
-                self.dg.start_generating()
-                self.no_update = 0 #LibreHub
-            else:
-                self.toggle.label = "Start"
-                self.toggle.button_type = "primary"
-                self.dg.stop_generating()
-                self.no_update = 1 #LibreHub
+        if state:
+            self.toggle.label = "Collecting"
+            self.toggle.button_type = "success"
+            self.dg.start_generating()
+            self.no_update = 0 #LibreHub
+        else:
+            self.toggle.label = "Start"
+            self.toggle.button_type = "primary"
+            self.dg.stop_generating()
+            self.no_update = 1 #LibreHub
 
     def _toggle_pmt_signal(self, attr, old, new):
-        with self.dg_lock:
-            if new == "PMT1":
-                self.line_pmt1.visible = True
-                self.line_pmt2.visible = False 
-            
-            if new == "PMT2":
-                self.line_pmt1.visible = False
-                self.line_pmt2.visible = True
+        if new == "PMT1":
+            self.line_pmt1.visible = True
+            self.line_pmt2.visible = False 
+        
+        if new == "PMT2":
+            self.line_pmt1.visible = False
+            self.line_pmt2.visible = True
 
-            if new == "All":
-                self.line_pmt1.visible = True
-                self.line_pmt2.visible = True
+        if new == "All":
+            self.line_pmt1.visible = True
+            self.line_pmt2.visible = True
 
     def _gain1_changed(self, attr, old, new):
-        with self.dg_lock:
-            self.dg.set_gain(new, 1)
+        self.dg.set_gain(new, 1)
 
     def _gain2_changed(self, attr, old, new):
-        with self.dg_lock:
-            self.dg.set_gain(new, 2)
+        self.dg.set_gain(new, 2)
 
     def _thresh_changed(self, attr, old, new):
-        with self.dg_lock:
-            self.dg.set_thresh(new)
-            self.thresh_line.location = self.sliders[3].value
+        self.dg.set_thresh(new)
+        self.thresh_line.location = self.sliders[3].value
 
     def _spinner_changed(self, attr, old, new):
-        with self.dg_lock:
-            self.buffer_length = self.bufferspinner.value
+        self.buffer_length = self.bufferspinner.value
 
     def _record_signal(self): #LibreHub
-        with self.dg_lock:
-            # Calculate the number of samples for 1 second
-            sampling_interval_ms = 0.02  # Sampling interval in milliseconds
-            samples_per_second = int(1000 / sampling_interval_ms)
+        # Calculate the number of samples for 1 second
+        sampling_interval_ms = 0.02  # Sampling interval in milliseconds
+        samples_per_second = int(1000 / sampling_interval_ms)
 
-            # Ensure data is being generated and capture 1 second of data
-            recorded_1s_data = {
-                "pmt1": {
-                    "x": self.source_PMT1.data["x"][-samples_per_second:],  # Last 1 second of data
-                    "y": self.source_PMT1.data["y"][-samples_per_second:],
-                },
-                "pmt2": {
-                    "x": self.source_PMT2.data["x"][-samples_per_second:],  # Last 1 second of data
-                    "y": self.source_PMT2.data["y"][-samples_per_second:],
-                },
-            }
+        # Ensure data is being generated and capture 1 second of data
+        recorded_1s_data = {
+            "pmt1": {
+                "x": self.source_PMT1.data["x"][-samples_per_second:],  # Last 1 second of data
+                "y": self.source_PMT1.data["y"][-samples_per_second:],
+            },
+            "pmt2": {
+                "x": self.source_PMT2.data["x"][-samples_per_second:],  # Last 1 second of data
+                "y": self.source_PMT2.data["y"][-samples_per_second:],
+            },
+        }
 
-            # Store this data in a file or a variable for further processing
-            print(f"\n Data recorded for 1 second: \n{recorded_1s_data}")
+        # Store this data in a file or a variable for further processing
+        print(f"\n Data recorded for 1 second: \n{recorded_1s_data}")
 
     def _boxselect_changed(self):
         # Custom javascript callback for box select tool
@@ -1627,119 +1609,117 @@ class UI:
         sub_source_bx_local.on_change("data", lambda attr, old, new: self._sub_boxselect_pass(attr, old, new, plot_id))
 
     def _boxselect_pass(self, attr, old, new):
-        with self.dg_lock:
-            print("Box Select made on original plot")
+        print("Box Select made on original plot")
 
-            # Pass box values to the hardware class through the pipe to set gate values
-            self.dg.set_gate_values(dict(new))
+        # Pass box values to the hardware class through the pipe to set gate values
+        self.dg.set_gate_values(dict(new))
 
-            # Store box values in ui box_select and update box select text
-            self.boxselect = new
-            self.custom_div.text = self._create_divhtml()
-            plot_id = "plot_0" #LibreHub
+        # Store box values in ui box_select and update box select text
+        self.boxselect = new
+        self.custom_div.text = self._create_divhtml()
+        plot_id = "plot_0" #LibreHub
 
-            if plot_id in self.sub_plots_dic: #LibreHub
-                plot0_fig = self.sub_plots_dic["plot_0"]
-                plot0_data = self.sub_plots_source["plot_0"]
-                # Retrieve box coordinates from the new selection, LibreHub
-                x0, y0, x1, y1 = new["x0"][0], new["y0"][0], new["x1"][0], new["y1"][0]
+        if plot_id in self.sub_plots_dic: #LibreHub
+            plot0_fig = self.sub_plots_dic["plot_0"]
+            plot0_data = self.sub_plots_source["plot_0"]
+            # Retrieve box coordinates from the new selection, LibreHub
+            x0, y0, x1, y1 = new["x0"][0], new["y0"][0], new["x1"][0], new["y1"][0]
 
-                # Filter data points that are within the selected box, LibreHub
-                main_data = self.source_2d.data
-                selected_indices = [
-                    i for i in range(len(main_data["x"]))
-                    if x0 <= main_data["x"][i] <= x1 and y0 <= main_data["y"][i] <= y1
-                ]
+            # Filter data points that are within the selected box, LibreHub
+            main_data = self.source_2d.data
+            selected_indices = [
+                i for i in range(len(main_data["x"]))
+                if x0 <= main_data["x"][i] <= x1 and y0 <= main_data["y"][i] <= y1
+            ]
 
-                # Update sub_data_source with selected data points, LibreHub
-                plot0_data.data = {
-                    "x": [main_data["x"][i] for i in selected_indices],
-                    "y": [main_data["y"][i] for i in selected_indices],
-                    "density": [main_data["density"][i] for i in selected_indices],
-                }
+            # Update sub_data_source with selected data points, LibreHub
+            plot0_data.data = {
+                "x": [main_data["x"][i] for i in selected_indices],
+                "y": [main_data["y"][i] for i in selected_indices],
+                "density": [main_data["density"][i] for i in selected_indices],
+            }
 
-                # Calculate new ranges with padding
-                if selected_indices:
-                    new_x_min = min(plot0_data.data['x'])
-                    new_x_max = max(plot0_data.data['x'])
-                    new_y_min = min(plot0_data.data['y'])
-                    new_y_max = max(plot0_data.data['y'])
+            # Calculate new ranges with padding
+            if selected_indices:
+                new_x_min = min(plot0_data.data['x'])
+                new_x_max = max(plot0_data.data['x'])
+                new_y_min = min(plot0_data.data['y'])
+                new_y_max = max(plot0_data.data['y'])
 
-                    # Define padding factor (e.g., 10% of the range)
-                    padding_factor = 0.15
+                # Define padding factor (e.g., 10% of the range)
+                padding_factor = 0.15
 
-                    # Calculate padding in logarithmic scale
-                    x_padding_min = new_x_min / (1 + padding_factor)
-                    x_padding_max = new_x_max * (1 + padding_factor)
-                    y_padding_min = new_y_min / (1 + padding_factor)
-                    y_padding_max = new_y_max * (1 + padding_factor)
+                # Calculate padding in logarithmic scale
+                x_padding_min = new_x_min / (1 + padding_factor)
+                x_padding_max = new_x_max * (1 + padding_factor)
+                y_padding_min = new_y_min / (1 + padding_factor)
+                y_padding_max = new_y_max * (1 + padding_factor)
 
-                    # Apply padded ranges while maintaining logarithmic scale
-                    plot0_fig.x_range.start = x_padding_min
-                    plot0_fig.x_range.end = x_padding_max
-                    plot0_fig.y_range.start = y_padding_min
-                    plot0_fig.y_range.end = y_padding_max
+                # Apply padded ranges while maintaining logarithmic scale
+                plot0_fig.x_range.start = x_padding_min
+                plot0_fig.x_range.end = x_padding_max
+                plot0_fig.y_range.start = y_padding_min
+                plot0_fig.y_range.end = y_padding_max
 
-                    # Ensure the tickers remain logarithmic
-                    plot0_fig.xaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
-                    plot0_fig.yaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
+                # Ensure the tickers remain logarithmic
+                plot0_fig.xaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
+                plot0_fig.yaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
 
     def _sub_boxselect_pass(self, attr, old, new, plot_id): #LibreHub
-        with self.dg_lock:
-            # Your implementation for handling the box select pass
-            print(f"Box Select made on plot with ID: {plot_id}")
-            plot_unit = int(plot_id.split("_")[1])
-            next_plot_id = f"plot_{plot_unit + 1}"
-            # Pass box values to the hardware class through the pipe to set gate values
-            self.dg.set_gate_values(dict(new))
+        # Your implementation for handling the box select pass
+        print(f"Box Select made on plot with ID: {plot_id}")
+        plot_unit = int(plot_id.split("_")[1])
+        next_plot_id = f"plot_{plot_unit + 1}"
+        # Pass box values to the hardware class through the pipe to set gate values
+        self.dg.set_gate_values(dict(new))
 
-            # Store box values in ui box_select and update box select text
-            self.sub_boxselect = new
-            self.dynamic_widgets_container.children[plot_unit].children[0].text = self._create_sub_divhtml()
-            
-            if next_plot_id in self.sub_plots_dic:
-                # Retrieve box coordinates from the new selection, LibreHub
-                x0, y0, x1, y1 = new["x0"][0], new["y0"][0], new["x1"][0], new["y1"][0]
+        # Store box values in ui box_select and update box select text
+        self.sub_boxselect = new
+        self.dynamic_widgets_container.children[plot_unit].children[0].text = self._create_sub_divhtml()
+        
+        if next_plot_id in self.sub_plots_dic:
+            # Retrieve box coordinates from the new selection, LibreHub
+            x0, y0, x1, y1 = new["x0"][0], new["y0"][0], new["x1"][0], new["y1"][0]
 
-                # Filter data points that are within the selected box, LibreHub
-                main_data = self.sub_plots_source[plot_id].data
-                selected_indices = [
-                    i for i in range(len(main_data["x"]))
-                    if x0 <= main_data["x"][i] <= x1 and y0 <= main_data["y"][i] <= y1
-                ]
+            # Filter data points that are within the selected box, LibreHub
+            main_data = self.sub_plots_source[plot_id].data
+            selected_indices = [
+                i for i in range(len(main_data["x"]))
+                if x0 <= main_data["x"][i] <= x1 and y0 <= main_data["y"][i] <= y1
+            ]
 
-                # Update sub_data_source with selected data points, LibreHub
-                self.sub_plots_source[next_plot_id].data = {
-                    "x": [main_data["x"][i] for i in selected_indices],
-                    "y": [main_data["y"][i] for i in selected_indices],
-                    "density": [main_data["density"][i] for i in selected_indices],
-                }
+            # Update sub_data_source with selected data points, LibreHub
+            self.sub_plots_source[next_plot_id].data = {
+                "x": [main_data["x"][i] for i in selected_indices],
+                "y": [main_data["y"][i] for i in selected_indices],
+                "density": [main_data["density"][i] for i in selected_indices],
+            }
 
-                # Calculate new ranges with padding
-                if selected_indices:
-                    new_x_min = min(self.sub_plots_source[next_plot_id].data['x'])
-                    new_x_max = max(self.sub_plots_source[next_plot_id].data['x'])
-                    new_y_min = min(self.sub_plots_source[next_plot_id].data['y'])
-                    new_y_max = max(self.sub_plots_source[next_plot_id].data['y'])
+            # Calculate new ranges with padding
+            if selected_indices:
+                new_x_min = min(self.sub_plots_source[next_plot_id].data['x'])
+                new_x_max = max(self.sub_plots_source[next_plot_id].data['x'])
+                new_y_min = min(self.sub_plots_source[next_plot_id].data['y'])
+                new_y_max = max(self.sub_plots_source[next_plot_id].data['y'])
 
-                    # Define padding factor (e.g., 10% of the range)
-                    padding_factor = 0.15
+                # Define padding factor (e.g., 10% of the range)
+                padding_factor = 0.15
 
-                    # Calculate padding in logarithmic scale
-                    x_padding_min = new_x_min / (1 + padding_factor)
-                    x_padding_max = new_x_max * (1 + padding_factor)
-                    y_padding_min = new_y_min / (1 + padding_factor)
-                    y_padding_max = new_y_max * (1 + padding_factor)
+                # Calculate padding in logarithmic scale
+                x_padding_min = new_x_min / (1 + padding_factor)
+                x_padding_max = new_x_max * (1 + padding_factor)
+                y_padding_min = new_y_min / (1 + padding_factor)
+                y_padding_max = new_y_max * (1 + padding_factor)
 
-                    # Apply padded ranges while maintaining logarithmic scale
-                    self.sub_plots_dic[next_plot_id].x_range.start = x_padding_min
-                    self.sub_plots_dic[next_plot_id].x_range.end = x_padding_max
-                    self.sub_plots_dic[next_plot_id].y_range.start = y_padding_min
-                    self.sub_plots_dic[next_plot_id].y_range.end = y_padding_max
+                # Apply padded ranges while maintaining logarithmic scale
+                self.sub_plots_dic[next_plot_id].x_range.start = x_padding_min
+                self.sub_plots_dic[next_plot_id].x_range.end = x_padding_max
+                self.sub_plots_dic[next_plot_id].y_range.start = y_padding_min
+                self.sub_plots_dic[next_plot_id].y_range.end = y_padding_max
 
-                    # Ensure the tickers remain logarithmic
-                    self.sub_plots_dic[next_plot_id].xaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
-                    self.sub_plots_dic[next_plot_id].yaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
+                # Ensure the tickers remain logarithmic
+                self.sub_plots_dic[next_plot_id].xaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
+                self.sub_plots_dic[next_plot_id].yaxis.ticker = LogTicker(base=10, mantissas=[1], desired_num_ticks=4)
 
     def manage_laser_live_status(self):           
         # Laser Parameters called, LibreHub
@@ -1787,28 +1767,27 @@ class UI:
 
     def update_ui(self):
         """Pull data from the hardware (in another process) and update the data source and plot"""
-        with self.dg_lock:
-            #Live Data Points
-            if self.toggle.label == "Collecting":
-                self.GATE_data_points.value = str(len(self.source_2d.data["x"]))
+        #Live Data Points
+        if self.toggle.label == "Collecting":
+            self.GATE_data_points.value = str(len(self.source_2d.data["x"]))
 
-            # Update pmt data
-            self.source_PMT1.data = self.dg.data["pmt1"]
-            self.source_PMT2.data = self.dg.data["pmt2"]
+        # Update pmt data
+        self.source_PMT1.data = self.dg.data["pmt1"]
+        self.source_PMT2.data = self.dg.data["pmt2"]
 
-            if self.no_update == 0 or self.toggle.label == "Collecting":
-                for key in self.rolling_source_2d:
-                    self.rolling_source_2d[key].extend(self.dg.data2d[key])
-                    if self.buffer_length == 0:
-                        self.rolling_source_2d[key] = [np.nan]
-                    elif len(self.rolling_source_2d[key]) > self.buffer_length:
-                        self.rolling_source_2d[key] = self.rolling_source_2d[key][
-                            -self.buffer_length :
-                        ]
+        if self.no_update == 0 or self.toggle.label == "Collecting":
+            for key in self.rolling_source_2d:
+                self.rolling_source_2d[key].extend(self.dg.data2d[key])
+                if self.buffer_length == 0:
+                    self.rolling_source_2d[key] = [np.nan]
+                elif len(self.rolling_source_2d[key]) > self.buffer_length:
+                    self.rolling_source_2d[key] = self.rolling_source_2d[key][
+                        -self.buffer_length :
+                    ]
 
-                self.source_2d.data = self.rolling_source_2d
+            self.source_2d.data = self.rolling_source_2d
 
-            self.manage_timers()
-            self.manage_laser_live_status()
+        self.manage_timers()
+        self.manage_laser_live_status()
 
 ui = UI()
