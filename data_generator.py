@@ -66,6 +66,10 @@ class DataGenerator:
             self._generate_data()
             time.sleep(self.SAMPLING_INTERVAL)
 
+    def _generate_data(self):
+        self._generate_signal()
+        self._analyze_drops()
+
     """ Generate Test PMT Signals """
 
     def _generate_signal(
