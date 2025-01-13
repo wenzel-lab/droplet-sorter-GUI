@@ -99,7 +99,6 @@ class UI:
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
         self.GATE_data_points = self._create_custom_GATE_1() #LibreHub
         self.DETECTOR_dropdown = self._create_DETECTOR_dropdown() #LibreHub
-        self.fpga_test_1 = self._create_SIGNAL_test_1() #LibreHub TEST
         self.DETECTOR_rec_button = self. _create_DETECTOR_button() #LibreHub
         self.SORTING_test_boxes = self._create_SORTING_layout() #LibreHub
         self.SORTING_slider = self._create_SORTING_slider() #LibreHub
@@ -185,20 +184,6 @@ class UI:
                     self.DETECTOR_dropdown, #LibreHub
                     row(
                         self.plot,
-                        column(
-                            self.fpga_test_1[0],
-                            self.fpga_test_1[1],
-                            self.fpga_test_1[2],
-                        ),
-                        column(
-                            self.fpga_test_1[3],
-                            self.fpga_test_1[4],
-                            self.fpga_test_1[5],
-                        ),
-                        column(
-                            self.fpga_test_1[6],
-                            self.fpga_test_1[7],
-                            self.fpga_test_1[8],
                         ),
                     ),
                     self.DETECTOR_rec_button, #LibreHub
@@ -789,78 +774,6 @@ class UI:
 
         return self.plot
     
-    def _create_SIGNAL_test_1(self): #LibreHub
-        test_boxes_info = [
-            {
-                "title" : "Test 1",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [60,30,20,30],
-            },
-            {
-                "title" : "Test 2",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [20,30,20,30],
-            },
-            {
-                "title" : "Test 3",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [20,30,20,30],
-            },
-            {
-                "title" : "Test 4",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [60,30,20,30],
-            },
-            {
-                "title" : "Test 5",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [20,30,20,30],
-            },
-            {
-                "title" : "Test 6",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [20,30,20,30],
-            },
-            {
-                "title" : "Test 7",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [60,30,20,30],
-            },
-            {
-                "title" : "Test 8",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [20,30,20,30],
-            },
-            {
-                "title" : "Test 9",
-                "value" : "0", #Attach variable here or make a callback
-                "width" : 100,
-                "margin" : [20,30,20,30],
-            },
-        ]
-
-        self.test_boxes_1 = []
-        for test_box_info in test_boxes_info:
-            test_widget = TextInput(
-                title = test_box_info["title"],
-                value = test_box_info["value"],
-                width = test_box_info["width"],
-                margin = test_box_info["margin"],
-                disabled = True,
-            )
-            #dropdown_widget.on_change("value",dropdown_box_info["callback"])
-            self.test_boxes_1.append(test_widget)
-
-        return self.test_boxes_1
-
     def _create_threshold_lines(self):
         self.thresh_line = Span(
             location=self.thresh,
