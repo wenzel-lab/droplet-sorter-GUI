@@ -62,7 +62,6 @@ class UI:
         self.source_PMT2 = ColumnDataSource(data=self.dg.data["pmt2"])
         self.source_2d = ColumnDataSource(data=self.dg.data2d)
         self.rolling_source_2d = self.dg.data2d.copy()
-
         # Initialize data sources for the interactive callbacks
         self.thresh = 0.05
         self.buffer_length = 5000
@@ -184,7 +183,6 @@ class UI:
                     self.DETECTOR_dropdown, #LibreHub
                     row(
                         self.plot,
-                        ),
                     ),
                     self.DETECTOR_rec_button, #LibreHub
                     row(
@@ -729,6 +727,7 @@ class UI:
             y_axis_type="log",
             title=f"Density Scatter Plot {self.add_counter + 2}",
             tools="box_select,reset,wheel_zoom,box_zoom,pan",
+            output_backend="webgl",
         )
         self.glyph_sub = self.sub_plot2d.scatter(
             "x",
@@ -755,6 +754,7 @@ class UI:
             x_range=(0, 50),
             y_range=(0, 1.2),
             margin=plot_margin,
+            output_backend="webgl"
         )
         self.line_pmt1 = self.plot.line(
             "x",
@@ -1003,6 +1003,7 @@ class UI:
             y_axis_type="log",
             title="Density Scatter Plot 1",
             tools="box_select,reset,wheel_zoom,box_zoom,pan",
+            output_backend="webgl",
         )
         self.glyph = self.plot2d.scatter(
             "x",
