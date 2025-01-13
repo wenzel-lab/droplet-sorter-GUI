@@ -97,6 +97,9 @@
             <mxPoint x="430" y="200" as="targetPoint" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-81" value="read new data from RedPitaya for display, and send new parameters to the RedPitaya.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Save data&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-3">
+          <mxGeometry x="460" y="100" width="130" height="140" as="geometry" />
+        </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-4" value="«interface»&lt;br&gt;&lt;b&gt;Scatter plots&lt;/b&gt;" style="html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="1">
           <mxGeometry x="127" y="194" width="110" height="50" as="geometry" />
         </mxCell>
@@ -120,7 +123,7 @@
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-14" value="RedPitaya single board computer with FPGA chip" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="100" y="550" width="780" height="370" as="geometry" />
         </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-15" value="Remote interactive GUI" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-15" value="FPGA chip with algrorythm for droplet detection&lt;div&gt;&amp;nbsp;and classification&lt;/div&gt;" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
           <mxGeometry x="20" y="45" width="330" height="295" as="geometry" />
         </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-16" value="&amp;laquo;interface&amp;raquo;&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;" style="html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
@@ -146,17 +149,14 @@
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-21" value="" style="ellipse;whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
           <mxGeometry x="300" y="105" width="20" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=295;exitDy=170;exitPerimeter=0;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-15" target="UKLIGVTQAQp2yDCQ6UzY-15">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-50" value="Server running on local computer and CPU" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-50" value="Server running on local computer and CPU&lt;div&gt;with FastAPI&lt;/div&gt;" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
           <mxGeometry x="420" y="45" width="330" height="295" as="geometry" />
         </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-51" value="&amp;laquo;interface&amp;raquo;&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;" style="html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
-          <mxGeometry x="420" y="265" width="110" height="50" as="geometry" />
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-51" value="Data logger" style="html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+          <mxGeometry x="430" y="230" width="110" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-52" value="Module" style="shape=component;align=left;spacingLeft=36;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;html=1;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
-          <mxGeometry x="570" y="260" width="120" height="60" as="geometry" />
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-52" value="Read FPGA&lt;div&gt;output data&lt;/div&gt;" style="shape=component;align=left;spacingLeft=36;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;html=1;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+          <mxGeometry x="580" y="225" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-53" style="edgeStyle=elbowEdgeStyle;rounded=0;html=1;labelBackgroundColor=none;startArrow=none;startFill=0;startSize=8;endArrow=none;endFill=0;endSize=16;fontFamily=Verdana;fontSize=12;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-55" target="UKLIGVTQAQp2yDCQ6UzY-52">
           <mxGeometry relative="1" as="geometry" />
@@ -164,19 +164,13 @@
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;labelBackgroundColor=none;startArrow=none;startFill=0;startSize=8;endArrow=open;endFill=0;endSize=16;fontFamily=Verdana;fontSize=12;dashed=1;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-52" target="UKLIGVTQAQp2yDCQ6UzY-51">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="630" y="350" />
-              <mxPoint x="495" y="350" />
+              <mxPoint x="640" y="315" />
+              <mxPoint x="505" y="315" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-55" value="" style="ellipse;whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
-          <mxGeometry x="710" y="280" width="20" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-56" value="" style="ellipse;whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
-          <mxGeometry x="700" y="105" width="20" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=295;exitDy=170;exitPerimeter=0;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-50" target="UKLIGVTQAQp2yDCQ6UzY-50">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry x="720" y="245" width="20" height="20" as="geometry" />
         </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-73" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;width=10;endSize=5.88;entryX=0;entryY=0;entryDx=152.5;entryDy=330;entryPerimeter=0;exitX=0.519;exitY=-0.006;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-15" target="UKLIGVTQAQp2yDCQ6UzY-50">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
@@ -186,6 +180,32 @@
         </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-74" value="shared memory registers" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
           <mxGeometry x="360" y="140" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-75" value="&lt;div style=&quot;text-align: left;&quot;&gt;update&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;respective&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;register&amp;nbsp;&lt;/div&gt;" style="html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+          <mxGeometry x="430" y="115" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-76" value="receive http&lt;div&gt;request to&lt;/div&gt;&lt;div&gt;change any&lt;/div&gt;&lt;div&gt;parameter&lt;/div&gt;" style="shape=component;align=left;spacingLeft=36;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;html=1;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+          <mxGeometry x="580" y="110" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-77" style="edgeStyle=elbowEdgeStyle;rounded=0;html=1;labelBackgroundColor=none;startArrow=none;startFill=0;startSize=8;endArrow=none;endFill=0;endSize=16;fontFamily=Verdana;fontSize=12;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-79" target="UKLIGVTQAQp2yDCQ6UzY-76">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-78" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;labelBackgroundColor=none;startArrow=none;startFill=0;startSize=8;endArrow=open;endFill=0;endSize=16;fontFamily=Verdana;fontSize=12;dashed=1;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-76" target="UKLIGVTQAQp2yDCQ6UzY-75">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="200" />
+              <mxPoint x="505" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-79" value="" style="ellipse;whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" vertex="1" parent="UKLIGVTQAQp2yDCQ6UzY-14">
+          <mxGeometry x="720" y="135" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-82" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.492;entryY=0.988;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="UKLIGVTQAQp2yDCQ6UzY-14" source="UKLIGVTQAQp2yDCQ6UzY-75" target="UKLIGVTQAQp2yDCQ6UzY-50">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="310" y="10" as="sourcePoint" />
+            <mxPoint x="360" y="-40" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="UKLIGVTQAQp2yDCQ6UzY-26" value="Pulse board" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-150" y="550" width="200" height="150" as="geometry" />
@@ -245,6 +265,12 @@
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="20" y="828" as="sourcePoint" />
             <mxPoint x="480" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UKLIGVTQAQp2yDCQ6UzY-80" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="UKLIGVTQAQp2yDCQ6UzY-51">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="550" as="sourcePoint" />
+            <mxPoint x="680" y="590" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
