@@ -41,8 +41,9 @@ class UI:
         # Create an instance of the hardware class that will run in a separate process.
         self.dg = ct.ObjectInSubprocess(DataGenerator)
 
-    def _init_COM(self): # There is a hint in the SQUID script, main or setup I think where it shows how to enable COM ports. LibreHub
-        self.serial_manager = SerialManager("/dev/ttyUSB0") #ttyUSB0, fix permissions
+    def _init_COM(self): #LibreHub
+        # Connect to the serial port
+        self.serial_manager = SerialManager("/dev/ttyUSB0") #ttyUSB0 by default, edit if necessary. Check permissions.
 
     def _init_ui(self):
         # Initialize UI components
@@ -56,65 +57,81 @@ class UI:
 
     def _setup_data_sources(self):
         # Initialize data sources for the generated data
-        self.source_PMT1 = ColumnDataSource(
-            data=self.dg.data["pmt1"]
-        )  # convert from s to ms
-        self.source_PMT2 = ColumnDataSource(data=self.dg.data["pmt2"])
+
+        # Signal plot
+        self.source_SiPM_1 = ColumnDataSource(data=self.dg.data["pmt1"])
+        self.source_SiPM_2 = ColumnDataSource(data=self.dg.data["pmt2"])
+        
+        # 2D scatter plot
         self.source_2d = ColumnDataSource(data=self.dg.data2d)
         self.rolling_source_2d = self.dg.data2d.copy()
+
         # Initialize data sources for the interactive callbacks
+        
+        # Signal plot
         self.thresh = 0.05
+
+        # Scatter plot
         self.buffer_length = 5000
         self.boxselect = {"x0": [0], "y0": [0], "x1": [0], "y1": [0]}
         self.source_bx = ColumnDataSource(data=self.boxselect)
         self.add_counter = 0 #LibreHub
         self.no_update = 0 #LibreHub
-        self.timer = None #LibreHub
-        self.delay = 1.0  # Debounce delay in seconds.LibreHub
         self.sub_plots_dic = {} #LibreHub
         self.sub_source_bx_dic = {} #LibreHub
         self.sub_plots_source = {} #LibreHub
         self.sub_boxselect = {"x0": [0], "y0": [0], "x1": [0], "y1": [0]} #LibreHub
         self.div_box_reset = 0 #LibreHub
 
+        # Laser module
+        self.timer = None #LibreHub
+        self.delay = 1.0  # Debounce delay in seconds.LibreHub
+
     """ UI Setup Methods """
 
     def _setup_ui_components(self):
-        # Setup update rate label, toggle, sliders, plot, and scatter plot
-        self.dynamic_widgets_container = row() #LibreHub
-        # FADS widgets.
-        self.toggle = self._create_GATE_toggle()
-        self.sliders = self._create_sliders()
+        # UI layout components
+        self.layout_headers = self._create_layout_headers() #LibreHub
+
+        # FADS module
+        # Scatter plot widgets
+        self.SCATTER_toggle = self._create_scatter_toggle()
         self.bufferspinner = self._create_bufferspinner()
         self.custom_div = self._create_custom_div()
-        self.plot = self._create_signal_plot()
         self.plot2d = self._create_2d_scatter_plot()
         self.create_graph = self._create_GATE_new_plot() #LibreHub
         self.delete_graph = self._create_GATE_delete_plot() #LibreHub
-        self.save_fads_button = self._create_FADS_EXPORT_save() #LibreHub
-        self.save_logs_button = self._create_logs_EXPORT_save() #LibreHub
+        self.dynamic_widgets_container = row() #LibreHub
         self.reset_button = self._create_GATE_reset() #LibreHub
-        self.layout_headers = self._create_layout_titles() #LibreHub
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
         self.GATE_data_points = self._create_custom_GATE_1() #LibreHub
+
+        # Signal plot widgets
+        self.SIGNAL_sliders = self._create_sliders()
+        self.plot = self._create_signal_plot()
+        self.enable_sensor = self._create_enable_sensor_button() #LibreHub
         self.DETECTOR_dropdown = self._create_DETECTOR_dropdown() #LibreHub
         self.DETECTOR_rec_button = self. _create_DETECTOR_button() #LibreHub
-        self.SORTING_test_boxes = self._create_SORTING_layout() #LibreHub
+
+        # Sorting widgets
+        self.SORTING_boxes = self._create_SORTING_layout() #LibreHub
         self.SORTING_slider = self._create_SORTING_slider() #LibreHub
         self.SORTING_switch = self._create_SORTING_button() #LibreHub
+
+        # Save data widgets
+        self.save_fads_button = self._create_FADS_EXPORT_save() #LibreHub
+        self.save_logs_button = self._create_logs_EXPORT_save() #LibreHub
 
         # Laser widgets, LibreHub
         self.COM_ini = self._create_start_COM_toggle()
         self.COM_log_console = self._create_custom_COM_1()
         self.COM_status_error = self._create_custom_COM_2()
         self.COM_signal = self._create_custom_COM_3()
-        self.LASER_1_status = self._create_call_LASER_1_status()
-        self.LASER_2_status = self._create_call_LASER_2_status()
-        self.LASER_3_status = self._create_call_LASER_3_status()
-        self.LASER_status_code = self._create_custom_COM_status()
-        self.LASER_live = self._create_custom_power_tracker()
-        self.LASER_slider = self._create_laser_sliders()
-        self.LASER_power = self._create_pw_input_box()
+        self.laser_channel = self._create_custom_laser_toggle()
+        self.LASER_status_code = self._create_custom_laser_status()
+        self.LASER_pw_tracker = self._create_custom_power_tracker()
+        self.LASER_slider = self._create_custom_laser_sliders()
+        self.LASER_power_input = self._create_custom_pw_input_box()
 
         # Generate Layout
         self.doc.add_root(
@@ -124,24 +141,24 @@ class UI:
                 row( #LibreHub
                     column(
                         row(
-                            self.LASER_1_status,
-                            self.LASER_live[0],
+                            self.laser_channel[0],
+                            self.LASER_pw_tracker[0],
                             self.LASER_slider[0],
-                            self.LASER_power[0],
+                            self.LASER_power_input[0],
                         ),
                         self.LASER_status_code[0],
                         row(
-                            self.LASER_2_status,
-                            self.LASER_live[1],
+                            self.laser_channel[1],
+                            self.LASER_pw_tracker[1],
                             self.LASER_slider[1],
-                            self.LASER_power[1],
+                            self.LASER_power_input[1],
                         ),
                         self.LASER_status_code[1],
                         row(
-                            self.LASER_3_status,
-                            self.LASER_live[2],
+                            self.laser_channel[2],
+                            self.LASER_pw_tracker[2],
                             self.LASER_slider[2],
-                            self.LASER_power[2],
+                            self.LASER_power_input[2],
                         ),
                         self.LASER_status_code[2],
                     ),
@@ -157,7 +174,7 @@ class UI:
                 self.layout_headers[2],#LibreHub
                 row(
                     column(
-                        self.toggle,
+                        self.SCATTER_toggle,
                         self.reset_button, #LibreHub
                         row(
                             self.create_graph, #LibreHub
@@ -180,6 +197,14 @@ class UI:
                 ),
                 self.layout_headers[3],#LibreHub
                 column(
+                    row(
+                        self.enable_sensor[0], #LibreHub
+                        self.enable_sensor[1], #LibreHub
+                        self.enable_sensor[2], #LibreHub
+                        self.enable_sensor[3], #LibreHub
+                        self.enable_sensor[4], #LibreHub
+                        self.enable_sensor[5], #LibreHub
+                    ),
                     self.DETECTOR_dropdown, #LibreHub
                     row(
                         self.plot,
@@ -187,14 +212,14 @@ class UI:
                     self.DETECTOR_rec_button, #LibreHub
                     row(
                         column(
-                            self.sliders[0],
-                            self.sliders[1],
-                            self.sliders[2], #LibreHub
+                            self.SIGNAL_sliders[0],
+                            self.SIGNAL_sliders[1],
+                            self.SIGNAL_sliders[2], #LibreHub
                         ),
                         column(
-                            self.sliders[3],
-                            self.sliders[4], #LibreHub
-                            self.sliders[5], #LibreHub
+                            self.SIGNAL_sliders[3],
+                            self.SIGNAL_sliders[4], #LibreHub
+                            self.SIGNAL_sliders[5], #LibreHub
                         ),
                         
                     ),
@@ -202,15 +227,15 @@ class UI:
                 self.layout_headers[4],#LibreHub
                 column( #LibreHub
                     row(
-                        self.SORTING_test_boxes[0],
-                        self.SORTING_test_boxes[1],
-                        self.SORTING_test_boxes[2],
+                        self.SORTING_boxes[0],
+                        self.SORTING_boxes[1],
+                        self.SORTING_boxes[2],
                         self.SORTING_dead_slider,
                     ),
                     row(
-                        self.SORTING_test_boxes[3],
-                        self.SORTING_test_boxes[4],
-                        self.SORTING_test_boxes[5],
+                        self.SORTING_boxes[3],
+                        self.SORTING_boxes[4],
+                        self.SORTING_boxes[5],
                         self.SORTING_button,
                     ),
                 ),
@@ -225,7 +250,7 @@ class UI:
 
     """ UI Component Methods """
 
-    def _create_layout_titles(self): #LibreHub
+    def _create_layout_headers(self): #LibreHub
         layout_titles_info = [
             {
                 "text": """<span style="font-weight: bold; font-size: 20px; text-decoration: underline;">Laser Module</span>""",
@@ -310,7 +335,7 @@ class UI:
 
         return self.custom_COM_3
     
-    def _create_custom_COM_status(self): #LibreHub
+    def _create_custom_laser_status(self): #LibreHub
         COM_statuses_margin = [0,0,50,62]
         COM_statuses_info = [
             {
@@ -376,39 +401,45 @@ class UI:
                     disabled = power_tracker_info["disabled"]
                     )
             self.power_trackers.append(power_tracker)
+
         return self.power_trackers
 
-    def _create_call_LASER_1_status(self): #LibreHub
-        self.call_LASER_1_status_sign = Button(
-            label="488",
-            button_type="default",
-            margin=[22,0,22,10]
-            )
-        self.call_LASER_1_status_sign.on_click(self.show_and_toggle_LASER_1_status)
+    def _create_custom_laser_toggle(self): #LibreHub
+        laser_toggles_info = [
+            {
+                "label": "488",
+                "button_type": "default",
+                "margin": [22,0,22,10],
+                "disabled": False
+            },
+            {
+                "label": "638",
+                "button_type": "default",
+                "margin": [22,0,22,10],
+                "disabled": False
+            },
+            {
+                "label": "405",
+                "button_type": "default",
+                "margin": [22,0,22,10],
+                "disabled": False
+            },
+        ]
+        
+        self.laser_toggles = []
+        for laser_toggle_info in laser_toggles_info:
+            laser_toggle = Button(
+                    label = laser_toggle_info["label"],
+                    button_type = laser_toggle_info["button_type"],
+                    margin = laser_toggle_info["margin"],
+                    disabled = laser_toggle_info["disabled"]
+                    )
+            laser_toggle.on_click(lambda button=laser_toggle: self.laser_activation(button))
+            self.laser_toggles.append(laser_toggle)
 
-        return self.call_LASER_1_status_sign
+        return self.laser_toggles
 
-    def _create_call_LASER_2_status(self): #LibreHub
-        self.call_LASER_2_status_sign = Button(
-            label="638",
-            button_type="default",
-            margin=[22,0,22,10]
-            )
-        self.call_LASER_2_status_sign.on_click(self.show_and_toggle_LASER_2_status)
-
-        return self.call_LASER_2_status_sign
-
-    def _create_call_LASER_3_status(self): #LibreHub
-        self.call_LASER_3_status_sign = Button(
-            label="405",
-            button_type="default",
-            margin=[22,0,22,10]
-            )
-        self.call_LASER_3_status_sign.on_click(self.show_and_toggle_LASER_3_status)
-
-        return self.call_LASER_3_status_sign
-
-    def _create_laser_sliders(self): #LibreHub
+    def _create_custom_laser_sliders(self): #LibreHub
         laser_slider_margin = (10, 10, 20, 20)
 
         laser_sliders_info = [
@@ -462,7 +493,7 @@ class UI:
 
         return self.laser_sliders
     
-    def _create_pw_input_box(self): #LibreHub
+    def _create_custom_pw_input_box(self): #LibreHub
 
         lasers_w_box = [
             {
@@ -519,15 +550,15 @@ class UI:
 
         return self.delete_plot_button
 
-    def _create_GATE_toggle(self): #LibreHub
-        self.toggle = Toggle(
+    def _create_scatter_toggle(self): #LibreHub
+        self.scatter_toggle = Toggle(
             label="Start Experiment",
             button_type="primary",
             margin=[160,100,20,30],
             )
-        self.toggle.on_click(self._toggle_changed)
+        self.scatter_toggle.on_click(self._toggle_changed)
 
-        return self.toggle
+        return self.scatter_toggle
     
     def _create_GATE_dropdown(self): #LibreHub
         dropdown_boxes_info = [
@@ -571,7 +602,6 @@ class UI:
                 margin = dropdown_box_info["margin"],
                 disabled = True,
             )
-            #dropdown_widget.on_change("value",dropdown_box_info["callback"])
             self.dropdown_boxes.append(dropdown_widget)
 
         return self.dropdown_boxes
@@ -602,12 +632,12 @@ class UI:
         self.detector_selection = Select(
             title = "Detector",
             value = "All",
-            options = ["All","PMT1","PMT2"],
+            options = ["All","SiPM_1","SiPM_2","SiPM_3","SiPM_4","SiPM_5","SiPM_6"],
             width = 100,
             margin = [20,0,0,420],
             disabled = False,
         )
-        self.detector_selection.on_change("value",self._toggle_pmt_signal)
+        self.detector_selection.on_change("value",self._toggle_sipm_signal)
 
         return self.detector_selection
     
@@ -742,12 +772,66 @@ class UI:
 
         return self.sub_plot2d
 
+    def _create_enable_sensor_button(self): #LibreHub
+        sorting_sensor_status = [
+            {
+                "label" : "SiPM_1",
+                "button_type" : "danger",
+                "margin" : [20,20,20,80],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_2",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_3",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_4",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_5",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_6",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+        ]
+        
+        self.sensor_boxes = []
+        for sensor_status in sorting_sensor_status:
+            sensor_box_unit = Button(
+                label = sensor_status["label"],
+                button_type = sensor_status["button_type"],
+                disabled = sensor_status["disabled"],
+                margin = sensor_status["margin"],
+                width = 100,
+            )
+            sensor_box_unit.on_click(lambda button=sensor_box_unit: self._toggle_sensor(button))
+            self.sensor_boxes.append(sensor_box_unit)
+
+        return self.sensor_boxes
+    
     def _create_signal_plot(self):
         plot_margin = (30, 0, 0, 10)
         self.plot = figure(
             height=300,
             width=900,
-            title="Generated PMT Data",
+            title="Generated SiPM Data",
             x_axis_label="Time(ms)",
             y_axis_label="Voltage",
             toolbar_location=None,
@@ -756,19 +840,19 @@ class UI:
             margin=plot_margin,
             output_backend="webgl"
         )
-        self.line_pmt1 = self.plot.line(
+        self.line_sipm_1 = self.plot.line(
             "x",
             "y",
-            source=self.source_PMT1,
+            source=self.source_SiPM_1,
             color="mediumseagreen",
-            legend_label="PMT1",
+            legend_label="SiPM_1",
         )
-        self.line_pmt2 = self.plot.line(
+        self.line_sipm_2 = self.plot.line(
             "x",
             "y",
-            source=self.source_PMT2,
+            source=self.source_SiPM_2,
             color="royalblue",
-            legend_label="PMT2",
+            legend_label="SiPM_2",
         )
         self._create_threshold_lines()
 
@@ -1023,9 +1107,9 @@ class UI:
     def initialize_serial_toggle(self): #Something is delaying the toggle when Laser is disconnected. Delaying may come from spamming instructions from Slider, consider creating customJS. LibreHub
         if self.serial_manager.serial_connection is None:
             self._update_log("> [console]: ERROR, No COM port communication.")
-            self.call_LASER_1_status_sign.button_type = "warning"
-            self.call_LASER_2_status_sign.button_type = "warning"
-            self.call_LASER_3_status_sign.button_type = "warning"
+            self.laser_toggles[0].button_type = "warning"
+            self.laser_toggles[1].button_type = "warning"
+            self.laser_toggles[2].button_type = "warning"
         else:
             if self.init_COM_toggle.button_type == "primary":
                 self.init_COM_toggle.button_type = "success"
@@ -1033,20 +1117,20 @@ class UI:
                 self.custom_COM_1.visible = True
                 self.custom_COM_2.visible = True
                 self.custom_COM_3.visible = True
-                self.call_LASER_1_status_sign.button_type = "danger"
+                self.laser_toggles[0].button_type = "danger"
                 self.COM_statuses[0].visible = True
-                self.call_LASER_2_status_sign.button_type = "danger"
+                self.laser_toggles[1].button_type = "danger"
                 self.COM_statuses[1].visible = True
-                self.call_LASER_3_status_sign.button_type = "danger"
+                self.laser_toggles[2].button_type = "danger"
                 self.COM_statuses[2].visible = True
             else:
                 self.init_COM_toggle.button_type = "primary"
                 self._update_log("> [console]: COM communication disconnected.")
-                self.call_LASER_1_status_sign.button_type = "default"
+                self.laser_toggles[0].button_type = "default"
                 self.serial_manager.set_ch_light_state(1,0)
-                self.call_LASER_2_status_sign.button_type = "default"
+                self.laser_toggles[1].button_type = "default"
                 self.serial_manager.set_ch_light_state(2,0)
-                self.call_LASER_3_status_sign.button_type = "default"
+                self.laser_toggles[2].button_type = "default"
                 self.serial_manager.set_ch_light_state(3,0)
                 self.serial_manager.set_ch_power_reference(1, 0.5)
                 self.serial_manager.set_ch_power_reference(2, 0.5)
@@ -1055,65 +1139,54 @@ class UI:
                 self.laser_sliders[1].disabled = True
                 self.laser_sliders[2].disabled = True
 
-    def show_and_toggle_LASER_1_status(self): #LibreHub
+    def laser_activation(self, button): #LibreHub
         if self.init_COM_toggle.button_type == "success":
-            #Laser 1 status
-            ch1_light_state = self.serial_manager.get_ch1_light_state()
-            if int(ch1_light_state) == 0:
-                self.serial_manager.set_ch_light_state(1,1)
-                self.call_LASER_1_status_sign.button_type = "success"
-                self.call_LASER_1_status_sign.label = "488"
-                self._update_log("> [console]: LASER 1 ON.")
-                self.laser_sliders[0].disabled = False
+            if button.label == "488":
+                #Laser 1 status
+                ch1_light_state = self.serial_manager.get_ch1_light_state()
+                if int(ch1_light_state) == 0:
+                    self.serial_manager.set_ch_light_state(1,1)
+                    button.button_type = "success"
+                    self._update_log("> [console]: LASER 488 ON.")
+                    self.laser_sliders[0].disabled = False
 
+                else:
+                    self.serial_manager.set_ch_light_state(1,0)
+                    button.button_type = "danger"
+                    self._update_log("> [console]: LASER 488 OFF.")
+                    self.laser_sliders[0].disabled = True
+            
+            elif button.label == "638":
+                #Laser 2 status
+                ch2_light_state = self.serial_manager.get_ch2_light_state()
+                if int(ch2_light_state) == 0:
+                    self.serial_manager.set_ch_light_state(2,1)
+                    button.button_type = "success"
+                    self._update_log("> [console]: LASER 638 ON.")
+                    self.laser_sliders[1].disabled = False
+
+                else:
+                    self.serial_manager.set_ch_light_state(2,0)
+                    button.button_type = "danger"
+                    self._update_log("> [console]: LASER 638 OFF.")
+                    self.laser_sliders[1].disabled = True
+            
+            elif button.label == "405":
+                #Laser 3 status
+                ch3_light_state = self.serial_manager.get_ch3_light_state()
+                if int(ch3_light_state) == 0:
+                    self.serial_manager.set_ch_light_state(3,1)
+                    button.button_type = "success"
+                    self._update_log("> [console]: LASER 405 ON.")
+                    self.laser_sliders[2].disabled = False
+
+                else:
+                    self.serial_manager.set_ch_light_state(3,0)
+                    button.button_type = "danger"
+                    self._update_log("> [console]: LASER 405 OFF.")
+                    self.laser_sliders[2].disabled = True
             else:
-                self.serial_manager.set_ch_light_state(1,0)
-                self.call_LASER_1_status_sign.button_type = "danger"
-                self.call_LASER_1_status_sign.label = "488"
-                self._update_log("> [console]: LASER 1 OFF.")
-                self.laser_sliders[0].disabled = True
-        else:
-            self._update_log("> [console]: NO CONNECTION (LASER 1)")
-
-    def show_and_toggle_LASER_2_status(self): #LibreHub
-        if self.init_COM_toggle.button_type == "success":
-            #Laser 2 status
-            ch2_light_state = self.serial_manager.get_ch2_light_state()
-            if int(ch2_light_state) == 0:
-                self.serial_manager.set_ch_light_state(2,1)
-                self.call_LASER_2_status_sign.button_type = "success"
-                self.call_LASER_2_status_sign.label = "638"
-                self._update_log("> [console]: LASER 2 ON.")
-                self.laser_sliders[1].disabled = False
-
-            else:
-                self.serial_manager.set_ch_light_state(2,0)
-                self.call_LASER_2_status_sign.button_type = "danger"
-                self.call_LASER_2_status_sign.label = "638"
-                self._update_log("> [console]: LASER 2 OFF.")
-                self.laser_sliders[1].disabled = True
-        else:
-            self._update_log("> [console]: NO CONNECTION (LASER 2).")
-
-    def show_and_toggle_LASER_3_status(self): #LibreHub
-        if self.init_COM_toggle.button_type == "success":
-            #Laser 3 status
-            ch3_light_state = self.serial_manager.get_ch3_light_state()
-            if int(ch3_light_state) == 0:
-                self.serial_manager.set_ch_light_state(3,1)
-                self.call_LASER_3_status_sign.button_type = "success"
-                self.call_LASER_3_status_sign.label = "405"
-                self._update_log("> [console]: LASER 3 ON.")
-                self.laser_sliders[2].disabled = False
-
-            else:
-                self.serial_manager.set_ch_light_state(3,0)
-                self.call_LASER_3_status_sign.button_type = "danger"
-                self.call_LASER_3_status_sign.label = "405"
-                self._update_log("> [console]: LASER 3 OFF.")
-                self.laser_sliders[2].disabled = True
-        else:
-            self._update_log("> [console]: NO CONNECTION (LASER 3).")
+                self._update_log(f"> [console]: NO CONNECTION ({button.label}).")
 
     def _schedule_update_slider_1(self, attr, old, new):
         if self.timer is not None:
@@ -1220,6 +1293,36 @@ class UI:
     def _update_log(self, message): #LibreHub
         self.custom_COM_1.text += f"{message}<br>"
 
+    def _toggle_sensor(self, button): #LibreHub
+        if button.button_type == "danger":
+            button.button_type = "success"
+            if button.label == "SiPM_1":
+                print("1")
+            elif button.label == "SiPM_2":
+                print("2")
+            elif button.label == "SiPM_3":
+                print("3")
+            elif button.label == "SiPM_4":
+                print("4")
+            elif button.label == "SiPM_5":
+                print("5")
+            elif button.label == "SiPM_6":
+                print("6")
+        else:
+            button.button_type = "danger"
+            if button.label == "SiPM_1":
+                print("1'")
+            elif button.label == "SiPM_2":
+                print("2'")
+            elif button.label == "SiPM_3":
+                print("3'")
+            elif button.label == "SiPM_4":
+                print("4'")
+            elif button.label == "SiPM_5":
+                print("5'")
+            elif button.label == "SiPM_6":
+                print("6'")
+
     def _add_widget(self): #LibreHub
         unique_id = f"plot_{self.add_counter}"
         self.sub_plots_source[unique_id] = ColumnDataSource(data={"x": [0], "y": [0], "density": [0]})
@@ -1298,8 +1401,8 @@ class UI:
     def _save_button_clicked_2(self): #LibreHub
         # Backup the necessary data before saving
         backup_0 = self.source_2d
-        backup_1 = self.source_PMT1
-        backup_2 = self.source_PMT2
+        backup_1 = self.source_SiPM_1
+        backup_2 = self.source_SiPM_2
         backup_3 = [self.sliders[0].value, self.sliders[1].value, self.sliders[2].value]
         backup_4 = self.bufferspinner.value
         backup_5 = [self.laser_boxes[0].value, self.laser_boxes[1].value, self.laser_boxes[2].value]
@@ -1390,28 +1493,28 @@ class UI:
     
     def _toggle_changed(self, state):
         if state:
-            self.toggle.label = "Collecting"
-            self.toggle.button_type = "success"
+            self.scatter_toggle.label = "Collecting"
+            self.scatter_toggle.button_type = "success"
             self.dg.start_generating()
             self.no_update = 0 #LibreHub
         else:
-            self.toggle.label = "Start"
-            self.toggle.button_type = "primary"
+            self.scatter_toggle.label = "Start"
+            self.scatter_toggle.button_type = "primary"
             self.dg.stop_generating()
             self.no_update = 1 #LibreHub
 
-    def _toggle_pmt_signal(self, attr, old, new):
-        if new == "PMT1":
-            self.line_pmt1.visible = True
-            self.line_pmt2.visible = False 
+    def _toggle_sipm_signal(self, attr, old, new):
+        if new == "SiPM_1":
+            self.line_sipm_1.visible = True
+            self.line_sipm_2.visible = False 
         
-        if new == "PMT2":
-            self.line_pmt1.visible = False
-            self.line_pmt2.visible = True
+        if new == "SiPM_2":
+            self.line_sipm_1.visible = False
+            self.line_sipm_2.visible = True
 
         if new == "All":
-            self.line_pmt1.visible = True
-            self.line_pmt2.visible = True
+            self.line_sipm_1.visible = True
+            self.line_sipm_2.visible = True
 
     def _gain1_changed(self, attr, old, new):
         self.dg.set_gain(new, 1)
@@ -1433,13 +1536,13 @@ class UI:
 
         # Ensure data is being generated and capture 1 second of data
         recorded_1s_data = {
-            "pmt1": {
-                "x": self.source_PMT1.data["x"][-samples_per_second:],  # Last 1 second of data
-                "y": self.source_PMT1.data["y"][-samples_per_second:],
+            "sipm_1": {
+                "x": self.source_SiPM_1.data["x"][-samples_per_second:],  # Last 1 second of data
+                "y": self.source_SiPM_1.data["y"][-samples_per_second:],
             },
-            "pmt2": {
-                "x": self.source_PMT2.data["x"][-samples_per_second:],  # Last 1 second of data
-                "y": self.source_PMT2.data["y"][-samples_per_second:],
+            "sipm_2": {
+                "x": self.source_SiPM_2.data["x"][-samples_per_second:],  # Last 1 second of data
+                "y": self.source_SiPM_2.data["y"][-samples_per_second:],
             },
         }
 
@@ -1651,9 +1754,9 @@ class UI:
 
         # Laser Layout in Bokeh, LibreHub
             #Channel power
-            self.LASER_live[0].value = str(ch1_power)
-            self.LASER_live[1].value = str(ch2_power)
-            self.LASER_live[2].value = str(ch3_power)
+            self.LASER_pw_tracker[0].value = str(ch1_power)
+            self.LASER_pw_tracker[1].value = str(ch2_power)
+            self.LASER_pw_tracker[2].value = str(ch3_power)
             #Channel status
             self.LASER_status_code[0].value = f"LASER 1: {str(ch1_status)}"
             self.LASER_status_code[1].value = f"LASER 2: {str(ch2_status)}"
@@ -1678,14 +1781,14 @@ class UI:
     def update_ui(self):
         """Pull data from the hardware (in another process) and update the data source and plot"""
         #Live Data Points
-        if self.toggle.label == "Collecting":
+        if self.scatter_toggle.label == "Collecting":
             self.GATE_data_points.value = str(len(self.source_2d.data["x"]))
 
-        # Update pmt data
-        self.source_PMT1.data = self.dg.data["pmt1"]
-        self.source_PMT2.data = self.dg.data["pmt2"]
+        # Update sipm data
+        self.source_SiPM_1.data = self.dg.data["pmt1"]
+        self.source_SiPM_2.data = self.dg.data["pmt2"]
 
-        if self.no_update == 0 or self.toggle.label == "Collecting":
+        if self.no_update == 0 or self.scatter_toggle.label == "Collecting":
             for key in self.rolling_source_2d:
                 self.rolling_source_2d[key].extend(self.dg.data2d[key])
                 if self.buffer_length == 0:
