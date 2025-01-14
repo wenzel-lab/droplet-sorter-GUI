@@ -117,11 +117,11 @@ class UI:
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
         
         # FADS module. Signal plot widgets
-        self.signal_sliders = self._create_sliders()
-        self.plot = self._create_signal_plot()
         self.enable_sensor = self._create_enable_sensor_button() #LibreHub
         self.detector_dropdown = self._create_DETECTOR_dropdown() #LibreHub
+        self.plot = self._create_signal_plot()
         self.detector_rec_button = self. _create_DETECTOR_button() #LibreHub
+        self.signal_sliders = self._create_sliders()
 
         # FADS module. Sorting widgets
         self.pulse_boxes = self._create_SORTING_layout() #LibreHub
@@ -682,6 +682,116 @@ class UI:
 
         return self.dropdown_boxes
     
+    def _create_enable_sensor_button(self): #LibreHub
+        sorting_sensor_status = [
+            {
+                "label" : "SiPM_1",
+                "button_type" : "danger",
+                "margin" : [20,20,20,80],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_2",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_3",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_4",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_5",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_6",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+        ]
+        
+        self.sensor_boxes = []
+        for sensor_status in sorting_sensor_status:
+            sensor_box_unit = Button(
+                label = sensor_status["label"],
+                button_type = sensor_status["button_type"],
+                disabled = sensor_status["disabled"],
+                margin = sensor_status["margin"],
+                width = 100,
+            )
+            sensor_box_unit.on_click(lambda button=sensor_box_unit: self._toggle_sensor(button))
+            self.sensor_boxes.append(sensor_box_unit)
+
+        return self.sensor_boxes
+
+    def _create_DETECTOR_dropdown(self): #LibreHub
+        self.detector_selection = Select(
+            title = "Detector",
+            value = "All",
+            options = ["All","SiPM_1","SiPM_2","SiPM_3","SiPM_4","SiPM_5","SiPM_6"],
+            width = 100,
+            margin = [20,0,0,420],
+            disabled = False,
+        )
+        self.detector_selection.on_change("value",self._toggle_sipm_signal)
+
+        return self.detector_selection
+    
+    def _create_signal_plot(self):
+        plot_margin = (30, 0, 0, 10)
+        self.plot = figure(
+            height=300,
+            width=900,
+            title="Generated SiPM Data",
+            x_axis_label="Time(ms)",
+            y_axis_label="Voltage",
+            toolbar_location=None,
+            x_range=(0, 200),
+            y_range=(0, 1.2),
+            margin=plot_margin,
+            output_backend="webgl"
+        )
+        self.line_sipm_1 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_1,
+            color="mediumseagreen",
+            legend_label="SiPM_1",
+        )
+        self.line_sipm_2 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_2,
+            color="royalblue",
+            legend_label="SiPM_2",
+        )
+        self._create_threshold_lines()
+
+        return self.plot
+    
+    def _create_DETECTOR_button(self): #LibreHub
+        self.detector_record = Button(
+            label = "Record 1 second",
+            button_type = "primary",
+            margin = [20,0,0,420],
+            disabled = False,
+        )
+        self.detector_record.on_click(self._record_signal)
+
+        return self.detector_record
+    
     def _create_sliders(self):
 
         sliders_info = [
@@ -769,116 +879,6 @@ class UI:
             self.sliders.append(slider)
 
         return self.sliders
-    
-    def _create_signal_plot(self):
-        plot_margin = (30, 0, 0, 10)
-        self.plot = figure(
-            height=300,
-            width=900,
-            title="Generated SiPM Data",
-            x_axis_label="Time(ms)",
-            y_axis_label="Voltage",
-            toolbar_location=None,
-            x_range=(0, 50),
-            y_range=(0, 1.2),
-            margin=plot_margin,
-            output_backend="webgl"
-        )
-        self.line_sipm_1 = self.plot.line(
-            "x",
-            "y",
-            source=self.source_SiPM_1,
-            color="mediumseagreen",
-            legend_label="SiPM_1",
-        )
-        self.line_sipm_2 = self.plot.line(
-            "x",
-            "y",
-            source=self.source_SiPM_2,
-            color="royalblue",
-            legend_label="SiPM_2",
-        )
-        self._create_threshold_lines()
-
-        return self.plot
-    
-    def _create_enable_sensor_button(self): #LibreHub
-        sorting_sensor_status = [
-            {
-                "label" : "SiPM_1",
-                "button_type" : "danger",
-                "margin" : [20,20,20,80],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_2",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_3",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_4",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_5",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_6",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-        ]
-        
-        self.sensor_boxes = []
-        for sensor_status in sorting_sensor_status:
-            sensor_box_unit = Button(
-                label = sensor_status["label"],
-                button_type = sensor_status["button_type"],
-                disabled = sensor_status["disabled"],
-                margin = sensor_status["margin"],
-                width = 100,
-            )
-            sensor_box_unit.on_click(lambda button=sensor_box_unit: self._toggle_sensor(button))
-            self.sensor_boxes.append(sensor_box_unit)
-
-        return self.sensor_boxes
-
-    def _create_DETECTOR_dropdown(self): #LibreHub
-        self.detector_selection = Select(
-            title = "Detector",
-            value = "All",
-            options = ["All","SiPM_1","SiPM_2","SiPM_3","SiPM_4","SiPM_5","SiPM_6"],
-            width = 100,
-            margin = [20,0,0,420],
-            disabled = False,
-        )
-        self.detector_selection.on_change("value",self._toggle_sipm_signal)
-
-        return self.detector_selection
-    
-    def _create_DETECTOR_button(self): #LibreHub
-        self.detector_record = Button(
-            label = "Record 1 second",
-            button_type = "primary",
-            margin = [20,0,0,420],
-            disabled = False,
-        )
-        self.detector_record.on_click(self._record_signal)
-
-        return self.detector_record
     
     def _create_SORTING_layout(self): #LibreHub
         sorting_layout_info = [

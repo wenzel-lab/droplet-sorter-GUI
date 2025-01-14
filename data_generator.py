@@ -11,7 +11,7 @@ import time
 class DataGenerator:
     NUM_CHANNELS = 2
     SAMPLING_INTERVAL = 0.02  # time units in ms
-    SIGNAL_DURATION = 100
+    SIGNAL_DURATION = 200
     BASELINE = 0.01
     DROP_INTERVAL = 1
     DROP_WIDTH = 0.2
