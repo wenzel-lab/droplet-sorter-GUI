@@ -93,8 +93,18 @@ class UI:
         # UI layout components
         self.layout_headers = self._create_layout_headers() #LibreHub
 
-        # FADS module
-        # Scatter plot widgets
+        # Laser module #LibreHub
+        self.COM_ini = self._create_start_COM_toggle()
+        self.laser_channel = self._create_custom_laser_toggle()
+        self.LASER_pw_tracker = self._create_custom_power_tracker()
+        self.LASER_slider = self._create_custom_laser_sliders()
+        self.LASER_power_input = self._create_custom_pw_input_box()
+        self.LASER_status_code = self._create_custom_laser_status()
+        self.COM_log_console = self._create_custom_COM_1()
+        self.COM_signal = self._create_custom_COM_3()
+        self.COM_status_error = self._create_custom_COM_2()
+
+        # FADS module. Scatter plot widgets
         self.SCATTER_toggle = self._create_scatter_toggle()
         self.bufferspinner = self._create_bufferspinner()
         self.custom_div = self._create_custom_div()
@@ -106,32 +116,21 @@ class UI:
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
         self.GATE_data_points = self._create_custom_GATE_1() #LibreHub
 
-        # Signal plot widgets
+        # FADS module. Signal plot widgets
         self.SIGNAL_sliders = self._create_sliders()
         self.plot = self._create_signal_plot()
         self.enable_sensor = self._create_enable_sensor_button() #LibreHub
         self.DETECTOR_dropdown = self._create_DETECTOR_dropdown() #LibreHub
         self.DETECTOR_rec_button = self. _create_DETECTOR_button() #LibreHub
 
-        # Sorting widgets
+        # FADS module. Sorting widgets
         self.SORTING_boxes = self._create_SORTING_layout() #LibreHub
         self.SORTING_slider = self._create_SORTING_slider() #LibreHub
         self.SORTING_switch = self._create_SORTING_button() #LibreHub
 
-        # Save data widgets
+        # Save data module
         self.save_fads_button = self._create_FADS_EXPORT_save() #LibreHub
         self.save_logs_button = self._create_logs_EXPORT_save() #LibreHub
-
-        # Laser widgets, LibreHub
-        self.COM_ini = self._create_start_COM_toggle()
-        self.COM_log_console = self._create_custom_COM_1()
-        self.COM_status_error = self._create_custom_COM_2()
-        self.COM_signal = self._create_custom_COM_3()
-        self.laser_channel = self._create_custom_laser_toggle()
-        self.LASER_status_code = self._create_custom_laser_status()
-        self.LASER_pw_tracker = self._create_custom_power_tracker()
-        self.LASER_slider = self._create_custom_laser_sliders()
-        self.LASER_power_input = self._create_custom_pw_input_box()
 
         # Generate Layout
         self.doc.add_root(
