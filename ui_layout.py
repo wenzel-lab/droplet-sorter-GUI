@@ -94,39 +94,39 @@ class UI:
         self.layout_headers = self._create_layout_headers() #LibreHub
 
         # Laser module #LibreHub
-        self.COM_ini = self._create_start_COM_toggle()
+        self.com_ini = self._create_start_COM_toggle()
         self.laser_channel = self._create_custom_laser_toggle()
-        self.LASER_pw_tracker = self._create_custom_power_tracker()
-        self.LASER_slider = self._create_custom_laser_sliders()
-        self.LASER_power_input = self._create_custom_pw_input_box()
-        self.LASER_status_code = self._create_custom_laser_status()
-        self.COM_log_console = self._create_custom_COM_1()
-        self.COM_signal = self._create_custom_COM_3()
-        self.COM_status_error = self._create_custom_COM_2()
+        self.laser_pw_tracker = self._create_custom_power_tracker()
+        self.laser_slider = self._create_custom_laser_sliders()
+        self.laser_power_input = self._create_custom_pw_input_box()
+        self.laser_status_code = self._create_custom_laser_status()
+        self.com_log_console = self._create_custom_COM_1()
+        self.com_signal = self._create_custom_COM_2()
+        self.com_status_error = self._create_custom_COM_3()
 
         # FADS module. Scatter plot widgets
-        self.SCATTER_toggle = self._create_scatter_toggle()
-        self.bufferspinner = self._create_bufferspinner()
-        self.custom_div = self._create_custom_div()
-        self.plot2d = self._create_2d_scatter_plot()
+        self.fads_toggle = self._create_scatter_toggle()
+        self.reset_button = self._create_GATE_reset() #LibreHub
         self.create_graph = self._create_GATE_new_plot() #LibreHub
         self.delete_graph = self._create_GATE_delete_plot() #LibreHub
+        self.bufferspinner = self._create_bufferspinner()
+        self.scatter_data_points = self._create_custom_GATE_1() #LibreHub
+        self.custom_div = self._create_custom_div()
+        self.plot2d = self._create_2d_scatter_plot()
         self.dynamic_widgets_container = row() #LibreHub
-        self.reset_button = self._create_GATE_reset() #LibreHub
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
-        self.GATE_data_points = self._create_custom_GATE_1() #LibreHub
-
+        
         # FADS module. Signal plot widgets
-        self.SIGNAL_sliders = self._create_sliders()
+        self.signal_sliders = self._create_sliders()
         self.plot = self._create_signal_plot()
         self.enable_sensor = self._create_enable_sensor_button() #LibreHub
-        self.DETECTOR_dropdown = self._create_DETECTOR_dropdown() #LibreHub
-        self.DETECTOR_rec_button = self. _create_DETECTOR_button() #LibreHub
+        self.detector_dropdown = self._create_DETECTOR_dropdown() #LibreHub
+        self.detector_rec_button = self. _create_DETECTOR_button() #LibreHub
 
         # FADS module. Sorting widgets
-        self.SORTING_boxes = self._create_SORTING_layout() #LibreHub
-        self.SORTING_slider = self._create_SORTING_slider() #LibreHub
-        self.SORTING_switch = self._create_SORTING_button() #LibreHub
+        self.pulse_boxes = self._create_SORTING_layout() #LibreHub
+        self.pulse_dead_slider = self._create_SORTING_slider() #LibreHub
+        self.pulse_button = self._create_SORTING_button() #LibreHub
 
         # Save data module
         self.save_fads_button = self._create_FADS_EXPORT_save() #LibreHub
@@ -136,36 +136,36 @@ class UI:
         self.doc.add_root(
             column(
                 self.layout_headers[0], #LibreHub
-                self.COM_ini, #LibreHub
+                self.com_ini, #LibreHub
                 row( #LibreHub
                     column(
                         row(
                             self.laser_channel[0],
-                            self.LASER_pw_tracker[0],
-                            self.LASER_slider[0],
-                            self.LASER_power_input[0],
+                            self.laser_pw_tracker[0],
+                            self.laser_slider[0],
+                            self.laser_power_input[0],
                         ),
-                        self.LASER_status_code[0],
+                        self.laser_status_code[0],
                         row(
                             self.laser_channel[1],
-                            self.LASER_pw_tracker[1],
-                            self.LASER_slider[1],
-                            self.LASER_power_input[1],
+                            self.laser_pw_tracker[1],
+                            self.laser_slider[1],
+                            self.laser_power_input[1],
                         ),
-                        self.LASER_status_code[1],
+                        self.laser_status_code[1],
                         row(
                             self.laser_channel[2],
-                            self.LASER_pw_tracker[2],
-                            self.LASER_slider[2],
-                            self.LASER_power_input[2],
+                            self.laser_pw_tracker[2],
+                            self.laser_slider[2],
+                            self.laser_power_input[2],
                         ),
-                        self.LASER_status_code[2],
+                        self.laser_status_code[2],
                     ),
                     column(
-                        self.COM_log_console,
+                        self.com_log_console,
                         row(
-                            self.COM_signal,
-                            self.COM_status_error,
+                            self.com_signal,
+                            self.com_status_error,
                         ),
                     ),
                 ),
@@ -173,14 +173,14 @@ class UI:
                 self.layout_headers[2],#LibreHub
                 row(
                     column(
-                        self.SCATTER_toggle,
+                        self.fads_toggle,
                         self.reset_button, #LibreHub
                         row(
                             self.create_graph, #LibreHub
                             self.delete_graph, #LibrehUB
                         ),
                         self.bufferspinner, 
-                        self.GATE_data_points, #LibreHub
+                        self.scatter_data_points, #LibreHub
                     ),
                     column(
                         self.custom_div,
@@ -204,21 +204,21 @@ class UI:
                         self.enable_sensor[4], #LibreHub
                         self.enable_sensor[5], #LibreHub
                     ),
-                    self.DETECTOR_dropdown, #LibreHub
+                    self.detector_dropdown, #LibreHub
                     row(
                         self.plot,
                     ),
-                    self.DETECTOR_rec_button, #LibreHub
+                    self.detector_rec_button, #LibreHub
                     row(
                         column(
-                            self.SIGNAL_sliders[0],
-                            self.SIGNAL_sliders[1],
-                            self.SIGNAL_sliders[2], #LibreHub
+                            self.signal_sliders[0],
+                            self.signal_sliders[1],
+                            self.signal_sliders[2], #LibreHub
                         ),
                         column(
-                            self.SIGNAL_sliders[3],
-                            self.SIGNAL_sliders[4], #LibreHub
-                            self.SIGNAL_sliders[5], #LibreHub
+                            self.signal_sliders[3],
+                            self.signal_sliders[4], #LibreHub
+                            self.signal_sliders[5], #LibreHub
                         ),
                         
                     ),
@@ -226,16 +226,16 @@ class UI:
                 self.layout_headers[4],#LibreHub
                 column( #LibreHub
                     row(
-                        self.SORTING_boxes[0],
-                        self.SORTING_boxes[1],
-                        self.SORTING_boxes[2],
-                        self.SORTING_dead_slider,
+                        self.pulse_boxes[0],
+                        self.pulse_boxes[1],
+                        self.pulse_boxes[2],
+                        self.pulse_dead_slider,
                     ),
                     row(
-                        self.SORTING_boxes[3],
-                        self.SORTING_boxes[4],
-                        self.SORTING_boxes[5],
-                        self.SORTING_button,
+                        self.pulse_boxes[3],
+                        self.pulse_boxes[4],
+                        self.pulse_boxes[5],
+                        self.pulse_button,
                     ),
                 ),
                 self.layout_headers[5],#LibreHub
@@ -302,107 +302,6 @@ class UI:
 
         return self.init_COM_toggle
     
-    def _create_custom_COM_1(self): #LibreHub
-        self.custom_COM_1 = Div(
-            text = "",
-            width = 307,
-            height = 200,
-            styles = {"overflow-y":"scroll", "background-color":"lightgray","border-radius":"10px","padding":"10px"},
-            visible = False,
-            margin = [45,0,0,80],
-        )
-        return self.custom_COM_1
-    
-    def _create_custom_COM_2(self): #LibreHub
-        self.custom_COM_2 = TextInput(
-            value = "No Data",
-            visible = False,
-            resizable = "width",
-            margin = [19,0,0,20],
-            disabled = True,
-            )
-
-        return self.custom_COM_2
-
-    def _create_custom_COM_3(self): #LibreHub
-        self.custom_COM_3 = Button(
-            label = "STATUS",
-            button_type = "success",
-            visible = False,
-            margin = [20,0,0,80],
-            )
-
-        return self.custom_COM_3
-    
-    def _create_custom_laser_status(self): #LibreHub
-        COM_statuses_margin = [0,0,50,62]
-        COM_statuses_info = [
-            {
-                "text": "STATUS: No Data",
-                "visible": False,
-                "resizable": "width",
-                "disabled": True,
-            },
-            {
-                "text": "STATUS: No Data",
-                "visible": False,
-                "resizable": "width",
-                "disabled": True,
-            },
-            {
-                "text": "STATUS: No Data",
-                "visible": False,
-                "resizable": "width",
-                "disabled": True,
-            },
-        ]
-
-        self.COM_statuses = []
-        for COM_status_info in COM_statuses_info:
-            self.custom_COM_status = TextInput(
-                value=COM_status_info["text"],
-                visible=COM_status_info["visible"],
-                disabled=COM_status_info["disabled"],
-                resizable = COM_status_info["resizable"],
-                margin=COM_statuses_margin,
-                )
-            self.COM_statuses.append(self.custom_COM_status)
-        return self.COM_statuses
-    
-    def _create_custom_power_tracker(self): #LibreHub
-        power_trackers_info = [
-            {
-                "title": "Power [mW]",
-                "value": "No Data",
-                "width": 75,
-                "disabled": True
-            },
-            {
-                "title": "Power [mW]",
-                "value": "No Data",
-                "width": 75,
-                "disabled": True
-            },
-            {
-                "title": "Power [mW]",
-                "value": "No Data",
-                "width": 75,
-                "disabled": True
-            },
-        ]
-        
-        self.power_trackers = []
-        for power_tracker_info in power_trackers_info:
-            power_tracker = TextInput(
-                    title = power_tracker_info["title"],
-                    value = power_tracker_info["value"],
-                    width = power_tracker_info["width"],
-                    disabled = power_tracker_info["disabled"]
-                    )
-            self.power_trackers.append(power_tracker)
-
-        return self.power_trackers
-
     def _create_custom_laser_toggle(self): #LibreHub
         laser_toggles_info = [
             {
@@ -437,7 +336,41 @@ class UI:
             self.laser_toggles.append(laser_toggle)
 
         return self.laser_toggles
+    
+    def _create_custom_power_tracker(self): #LibreHub
+        power_trackers_info = [
+            {
+                "title": "Power [mW]",
+                "value": "No Data",
+                "width": 75,
+                "disabled": True
+            },
+            {
+                "title": "Power [mW]",
+                "value": "No Data",
+                "width": 75,
+                "disabled": True
+            },
+            {
+                "title": "Power [mW]",
+                "value": "No Data",
+                "width": 75,
+                "disabled": True
+            },
+        ]
+        
+        self.power_trackers = []
+        for power_tracker_info in power_trackers_info:
+            power_tracker = TextInput(
+                    title = power_tracker_info["title"],
+                    value = power_tracker_info["value"],
+                    width = power_tracker_info["width"],
+                    disabled = power_tracker_info["disabled"]
+                    )
+            self.power_trackers.append(power_tracker)
 
+        return self.power_trackers
+    
     def _create_custom_laser_sliders(self): #LibreHub
         laser_slider_margin = (10, 10, 20, 20)
 
@@ -491,7 +424,7 @@ class UI:
             self.laser_sliders.append(laser_slider)
 
         return self.laser_sliders
-    
+
     def _create_custom_pw_input_box(self): #LibreHub
 
         lasers_w_box = [
@@ -527,6 +460,93 @@ class UI:
 
         return self.laser_boxes
     
+    def _create_custom_laser_status(self): #LibreHub
+        COM_statuses_margin = [0,0,50,62]
+        COM_statuses_info = [
+            {
+                "text": "STATUS: No Data",
+                "visible": False,
+                "resizable": "width",
+                "disabled": True,
+            },
+            {
+                "text": "STATUS: No Data",
+                "visible": False,
+                "resizable": "width",
+                "disabled": True,
+            },
+            {
+                "text": "STATUS: No Data",
+                "visible": False,
+                "resizable": "width",
+                "disabled": True,
+            },
+        ]
+
+        self.COM_statuses = []
+        for COM_status_info in COM_statuses_info:
+            self.custom_COM_status = TextInput(
+                value=COM_status_info["text"],
+                visible=COM_status_info["visible"],
+                disabled=COM_status_info["disabled"],
+                resizable = COM_status_info["resizable"],
+                margin=COM_statuses_margin,
+                )
+            self.COM_statuses.append(self.custom_COM_status)
+        return self.COM_statuses
+
+    def _create_custom_COM_1(self): #LibreHub
+        self.custom_COM_1 = Div(
+            text = "",
+            width = 307,
+            height = 200,
+            styles = {"overflow-y":"scroll", "background-color":"lightgray","border-radius":"10px","padding":"10px"},
+            visible = False,
+            margin = [45,0,0,80],
+        )
+        return self.custom_COM_1
+    
+    def _create_custom_COM_2(self): #LibreHub
+        self.custom_COM_3 = Button(
+            label = "STATUS",
+            button_type = "success",
+            visible = False,
+            margin = [20,0,0,80],
+            )
+
+        return self.custom_COM_3
+    
+    def _create_custom_COM_3(self): #LibreHub
+        self.custom_COM_2 = TextInput(
+            value = "No Data",
+            visible = False,
+            resizable = "width",
+            margin = [19,0,0,20],
+            disabled = True,
+            )
+
+        return self.custom_COM_2
+    
+    def _create_scatter_toggle(self): #LibreHub
+        self.scatter_toggle = Toggle(
+            label="Start Experiment",
+            button_type="primary",
+            margin=[160,100,20,30],
+            )
+        self.scatter_toggle.on_click(self._toggle_changed)
+
+        return self.scatter_toggle
+    
+    def _create_GATE_reset(self): #LibreHub
+        self.reset_button = Button(
+            label = "Reset Experiment",
+            button_type = "warning",
+            margin = [10,30,20,30]
+            )
+        self.reset_button.on_click(self._reset_button_clicked)
+
+        return self.reset_button
+    
     def _create_GATE_new_plot(self):
         self.create_plot_button = Button(
             label = "Add",
@@ -548,16 +568,73 @@ class UI:
         self.delete_plot_button.on_click(self._remove_widget)
 
         return self.delete_plot_button
+    
+    def _create_bufferspinner(self):
+        buffer_margin = (10, 0, 20, 30)
+        self.bufferspinner = Spinner(
+            title="Max. Data Points Displayed",
+            low=0,
+            high=10000,
+            step=500,
+            value=self.buffer_length,
+            width=150,
+            margin=buffer_margin,
+        )
+        self.bufferspinner.on_change("value", self._spinner_changed)
 
-    def _create_scatter_toggle(self): #LibreHub
-        self.scatter_toggle = Toggle(
-            label="Start Experiment",
-            button_type="primary",
-            margin=[160,100,20,30],
-            )
-        self.scatter_toggle.on_click(self._toggle_changed)
+        return self.bufferspinner
+    
+    def _create_custom_GATE_1(self): #LibreHub
+        self.custom_GATE_1 = TextInput(
+            title = "N° Data Points",
+            value = "0",
+            margin = [10,0,0,30],
+            width = 150,
+            visible = True,
+            disabled = True,
+        )
 
-        return self.scatter_toggle
+        return self.custom_GATE_1
+    
+    def _create_custom_div(self):
+        div_margin = (0, 0, 20, 68)
+
+        # Creating the Bokeh Div object with the HTML content
+        self.custom_div = Div(
+            text=self._create_divhtml(), width=400, height=100, margin=div_margin
+        )
+
+        return self.custom_div
+    
+    def _create_2d_scatter_plot(self):
+        color_mapper = LinearColorMapper(palette="Viridis256")
+        self.plot2d = figure(
+            height=400,
+            width=450,
+            margin = [0,0,30,0],
+            x_axis_label="Channel 1 AUC",
+            y_axis_label="Channel 2 AUC",
+            x_range=(1e3, 1e6),
+            y_range=(1e3, 1e6),
+            x_axis_type="log",
+            y_axis_type="log",
+            title="Density Scatter Plot 1",
+            tools="box_select,reset,wheel_zoom,box_zoom,pan",
+            output_backend="webgl",
+        )
+        self.glyph = self.plot2d.scatter(
+            "x",
+            "y",
+            source=self.source_2d,
+            size=2,
+            color={"field": "density", "transform": color_mapper},
+            line_color=None,
+            fill_alpha=0.6,
+        )
+        self.glyph.nonselection_glyph = None  # supress alpha change for nonselected indices bc refresh messes this up
+        self._boxselect_changed()
+
+        return self.plot2d
     
     def _create_GATE_dropdown(self): #LibreHub
         dropdown_boxes_info = [
@@ -605,28 +682,180 @@ class UI:
 
         return self.dropdown_boxes
     
-    def _create_custom_GATE_1(self): #LibreHub
-        self.custom_GATE_1 = TextInput(
-            title = "N° Data Points",
-            value = "0",
-            margin = [10,0,0,30],
-            width = 150,
-            visible = True,
-            disabled = True,
-        )
+    def _create_sliders(self):
 
-        return self.custom_GATE_1
+        sliders_info = [
+            {
+                "start": 0.01,
+                "end": 1,
+                "value": 0.5,
+                "step": 0.01,
+                "title": "Detector 1 Gain",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 50],
+                "callback": self._gain1_changed,
+                "disabled" : False,
+            },
+            {
+                "start": 0.01,
+                "end": 1,
+                "value": 0.5,
+                "step": 0.01,
+                "title": "Detector 2 Gain",
+                "bar_color": "royalblue",
+                "margin" : [20, 10, 20, 50],
+                "callback": self._gain2_changed,
+                "disabled" : False,
+            },
+            { #LibreHub
+                "start": 0.01,
+                "end": 1,
+                "value": 0.5,
+                "step": 0.01,
+                "title": "Detector 3 Gain",
+                "bar_color": "royalblue",
+                "margin" : [20, 10, 20, 50],
+                "callback": self._gain2_changed,
+                "disabled" : True,
+            },
+            {
+                "start": 0,
+                "end": 2,
+                "value": self.thresh,
+                "step": 0.01,
+                "title": "Noise Threshold 1",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 250],
+                "callback": self._thresh_changed,
+                "disabled" : False,
+            },
+            { #LibreHub
+                "start": 0,
+                "end": 2,
+                "value": self.thresh,
+                "step": 0.01,
+                "title": "Noise Threshold 2",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 250],
+                "callback": self._thresh_changed,
+                "disabled" : True,
+            },
+            { #LibreHub
+                "start": 0,
+                "end": 2,
+                "value": self.thresh,
+                "step": 0.01,
+                "title": "Noise Threshold 3",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 250],
+                "callback": self._thresh_changed,
+                "disabled" : True,
+            },
+        ]
 
-    def _create_GATE_reset(self): #LibreHub
-        self.reset_button = Button(
-            label = "Reset Experiment",
-            button_type = "warning",
-            margin = [10,30,20,30]
+        self.sliders = []
+        for slider_info in sliders_info:
+            slider = Slider(
+                start=slider_info["start"],
+                end=slider_info["end"],
+                value=slider_info["value"],
+                step=slider_info["step"],
+                title=slider_info["title"],
+                bar_color=slider_info["bar_color"],
+                margin=slider_info["margin"],
+                disabled=slider_info["disabled"],
             )
-        self.reset_button.on_click(self._reset_button_clicked)
+            slider.on_change("value", slider_info["callback"])
+            self.sliders.append(slider)
 
-        return self.reset_button
+        return self.sliders
     
+    def _create_signal_plot(self):
+        plot_margin = (30, 0, 0, 10)
+        self.plot = figure(
+            height=300,
+            width=900,
+            title="Generated SiPM Data",
+            x_axis_label="Time(ms)",
+            y_axis_label="Voltage",
+            toolbar_location=None,
+            x_range=(0, 50),
+            y_range=(0, 1.2),
+            margin=plot_margin,
+            output_backend="webgl"
+        )
+        self.line_sipm_1 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_1,
+            color="mediumseagreen",
+            legend_label="SiPM_1",
+        )
+        self.line_sipm_2 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_2,
+            color="royalblue",
+            legend_label="SiPM_2",
+        )
+        self._create_threshold_lines()
+
+        return self.plot
+    
+    def _create_enable_sensor_button(self): #LibreHub
+        sorting_sensor_status = [
+            {
+                "label" : "SiPM_1",
+                "button_type" : "danger",
+                "margin" : [20,20,20,80],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_2",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_3",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_4",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_5",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+            {
+                "label" : "SiPM_6",
+                "button_type" : "danger",
+                "margin" : [20,20,20,20],
+                "disabled" : False,
+            },
+        ]
+        
+        self.sensor_boxes = []
+        for sensor_status in sorting_sensor_status:
+            sensor_box_unit = Button(
+                label = sensor_status["label"],
+                button_type = sensor_status["button_type"],
+                disabled = sensor_status["disabled"],
+                margin = sensor_status["margin"],
+                width = 100,
+            )
+            sensor_box_unit.on_click(lambda button=sensor_box_unit: self._toggle_sensor(button))
+            self.sensor_boxes.append(sensor_box_unit)
+
+        return self.sensor_boxes
+
     def _create_DETECTOR_dropdown(self): #LibreHub
         self.detector_selection = Select(
             title = "Detector",
@@ -741,6 +970,8 @@ class UI:
         self.save_button.on_click(self._save_button_clicked_2)
         
         return self.save_button
+    
+    """ UI Special Definitions """
 
     def _create_2d_scatter_sub_plot(self, data_source): #LibreHub
         color_mapper = LinearColorMapper(palette="Viridis256")
@@ -770,92 +1001,6 @@ class UI:
         self.glyph_sub.nonselection_glyph = None  # supress alpha change for nonselected indices bc refresh messes this up
 
         return self.sub_plot2d
-
-    def _create_enable_sensor_button(self): #LibreHub
-        sorting_sensor_status = [
-            {
-                "label" : "SiPM_1",
-                "button_type" : "danger",
-                "margin" : [20,20,20,80],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_2",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_3",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_4",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_5",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-            {
-                "label" : "SiPM_6",
-                "button_type" : "danger",
-                "margin" : [20,20,20,20],
-                "disabled" : False,
-            },
-        ]
-        
-        self.sensor_boxes = []
-        for sensor_status in sorting_sensor_status:
-            sensor_box_unit = Button(
-                label = sensor_status["label"],
-                button_type = sensor_status["button_type"],
-                disabled = sensor_status["disabled"],
-                margin = sensor_status["margin"],
-                width = 100,
-            )
-            sensor_box_unit.on_click(lambda button=sensor_box_unit: self._toggle_sensor(button))
-            self.sensor_boxes.append(sensor_box_unit)
-
-        return self.sensor_boxes
-    
-    def _create_signal_plot(self):
-        plot_margin = (30, 0, 0, 10)
-        self.plot = figure(
-            height=300,
-            width=900,
-            title="Generated SiPM Data",
-            x_axis_label="Time(ms)",
-            y_axis_label="Voltage",
-            toolbar_location=None,
-            x_range=(0, 50),
-            y_range=(0, 1.2),
-            margin=plot_margin,
-            output_backend="webgl"
-        )
-        self.line_sipm_1 = self.plot.line(
-            "x",
-            "y",
-            source=self.source_SiPM_1,
-            color="mediumseagreen",
-            legend_label="SiPM_1",
-        )
-        self.line_sipm_2 = self.plot.line(
-            "x",
-            "y",
-            source=self.source_SiPM_2,
-            color="royalblue",
-            legend_label="SiPM_2",
-        )
-        self._create_threshold_lines()
-
-        return self.plot
     
     def _create_threshold_lines(self):
         self.thresh_line = Span(
@@ -866,109 +1011,6 @@ class UI:
             line_dash="dotted",
         )
         self.plot.add_layout(self.thresh_line)
-
-    def _create_sliders(self):
-
-        sliders_info = [
-            {
-                "start": 0.01,
-                "end": 1,
-                "value": 0.5,
-                "step": 0.01,
-                "title": "Detector 1 Gain",
-                "bar_color": "mediumseagreen",
-                "margin" : [20, 10, 20, 50],
-                "callback": self._gain1_changed,
-                "disabled" : False,
-            },
-            {
-                "start": 0.01,
-                "end": 1,
-                "value": 0.5,
-                "step": 0.01,
-                "title": "Detector 2 Gain",
-                "bar_color": "royalblue",
-                "margin" : [20, 10, 20, 50],
-                "callback": self._gain2_changed,
-                "disabled" : False,
-            },
-            { #LibreHub
-                "start": 0.01,
-                "end": 1,
-                "value": 0.5,
-                "step": 0.01,
-                "title": "Detector 3 Gain",
-                "bar_color": "royalblue",
-                "margin" : [20, 10, 20, 50],
-                "callback": self._gain2_changed,
-                "disabled" : True,
-            },
-            {
-                "start": 0,
-                "end": 2,
-                "value": self.thresh,
-                "step": 0.01,
-                "title": "Noise Threshold 1",
-                "bar_color": "mediumseagreen",
-                "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
-                "disabled" : False,
-            },
-            { #LibreHub
-                "start": 0,
-                "end": 2,
-                "value": self.thresh,
-                "step": 0.01,
-                "title": "Noise Threshold 2",
-                "bar_color": "mediumseagreen",
-                "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
-                "disabled" : True,
-            },
-            { #LibreHub
-                "start": 0,
-                "end": 2,
-                "value": self.thresh,
-                "step": 0.01,
-                "title": "Noise Threshold 3",
-                "bar_color": "mediumseagreen",
-                "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
-                "disabled" : True,
-            },
-        ]
-
-        self.sliders = []
-        for slider_info in sliders_info:
-            slider = Slider(
-                start=slider_info["start"],
-                end=slider_info["end"],
-                value=slider_info["value"],
-                step=slider_info["step"],
-                title=slider_info["title"],
-                bar_color=slider_info["bar_color"],
-                margin=slider_info["margin"],
-                disabled=slider_info["disabled"],
-            )
-            slider.on_change("value", slider_info["callback"])
-            self.sliders.append(slider)
-
-        return self.sliders
-
-    def _create_bufferspinner(self):
-        buffer_margin = (10, 0, 20, 30)
-        self.bufferspinner = Spinner(
-            title="Max. Data Points Displayed",
-            low=0,
-            high=10000,
-            step=500,
-            value=self.buffer_length,
-            width=150,
-            margin=buffer_margin,
-        )
-        self.bufferspinner.on_change("value", self._spinner_changed)
-
-        return self.bufferspinner
 
     def _create_divhtml(self):
         # Extracting float values from the dictionary
@@ -1051,16 +1093,6 @@ class UI:
         self.div_box_reset = 0
 
         return self.sub_html_content
-
-    def _create_custom_div(self):
-        div_margin = (0, 0, 20, 68)
-
-        # Creating the Bokeh Div object with the HTML content
-        self.custom_div = Div(
-            text=self._create_divhtml(), width=400, height=100, margin=div_margin
-        )
-
-        return self.custom_div
     
     def _create_sub_custom_div(self): #LibreHub
         div_margin = (0, 0, 20, 68)
@@ -1071,36 +1103,6 @@ class UI:
         )
 
         return self.sub_custom_div
-
-    def _create_2d_scatter_plot(self):
-        color_mapper = LinearColorMapper(palette="Viridis256")
-        self.plot2d = figure(
-            height=400,
-            width=450,
-            margin = [0,0,30,0],
-            x_axis_label="Channel 1 AUC",
-            y_axis_label="Channel 2 AUC",
-            x_range=(1e3, 1e6),
-            y_range=(1e3, 1e6),
-            x_axis_type="log",
-            y_axis_type="log",
-            title="Density Scatter Plot 1",
-            tools="box_select,reset,wheel_zoom,box_zoom,pan",
-            output_backend="webgl",
-        )
-        self.glyph = self.plot2d.scatter(
-            "x",
-            "y",
-            source=self.source_2d,
-            size=2,
-            color={"field": "density", "transform": color_mapper},
-            line_color=None,
-            fill_alpha=0.6,
-        )
-        self.glyph.nonselection_glyph = None  # supress alpha change for nonselected indices bc refresh messes this up
-        self._boxselect_changed()
-
-        return self.plot2d
 
     """ Callback Methods """
     def initialize_serial_toggle(self): #Something is delaying the toggle when Laser is disconnected. Delaying may come from spamming instructions from Slider, consider creating customJS. LibreHub
@@ -1356,7 +1358,7 @@ class UI:
         self.no_update = 1
         self.div_box_reset = 1
         
-        self.GATE_data_points.value = "0"
+        self.scatter_data_points.value = "0"
         #Clean plot_0
         #Source
         for key in self.rolling_source_2d:
@@ -1753,13 +1755,13 @@ class UI:
 
         # Laser Layout in Bokeh, LibreHub
             #Channel power
-            self.LASER_pw_tracker[0].value = str(ch1_power)
-            self.LASER_pw_tracker[1].value = str(ch2_power)
-            self.LASER_pw_tracker[2].value = str(ch3_power)
+            self.laser_pw_tracker[0].value = str(ch1_power)
+            self.laser_pw_tracker[1].value = str(ch2_power)
+            self.laser_pw_tracker[2].value = str(ch3_power)
             #Channel status
-            self.LASER_status_code[0].value = f"LASER 1: {str(ch1_status)}"
-            self.LASER_status_code[1].value = f"LASER 2: {str(ch2_status)}"
-            self.LASER_status_code[2].value = f"LASER 3: {str(ch3_status)}"
+            self.laser_status_code[0].value = f"LASER 1: {str(ch1_status)}"
+            self.laser_status_code[1].value = f"LASER 2: {str(ch2_status)}"
+            self.laser_status_code[2].value = f"LASER 3: {str(ch3_status)}"
 
             #Channel failure
             if ch1_failure != "[]" or ch2_failure != "[]" or ch3_failure != "[]":
@@ -1781,7 +1783,7 @@ class UI:
         """Pull data from the hardware (in another process) and update the data source and plot"""
         #Live Data Points
         if self.scatter_toggle.label == "Collecting":
-            self.GATE_data_points.value = str(len(self.source_2d.data["x"]))
+            self.scatter_data_points.value = str(len(self.source_2d.data["x"]))
 
         # Update sipm data
         self.source_SiPM_1.data = self.dg.data["pmt1"]
