@@ -33,13 +33,13 @@ class UI:
 
     def __init__(self):
         print("UI init")
-        self._init_hardware()
+        self._init_hardware() #(dg)
         self._init_COM()
         self._init_ui()
 
     def _init_hardware(self):
         # Create an instance of the hardware class that will run in a separate process.
-        self.dg = ct.ObjectInSubprocess(DataGenerator)
+        self.dg = ct.ObjectInSubprocess(DataGenerator) #(dg)
 
     def _init_COM(self): #LibreHub
         # Connect to the serial port
@@ -59,12 +59,12 @@ class UI:
         # Initialize data sources for the generated data
 
         # Signal plot
-        self.source_SiPM_1 = ColumnDataSource(data=self.dg.data["pmt1"])
-        self.source_SiPM_2 = ColumnDataSource(data=self.dg.data["pmt2"])
+        self.source_SiPM_1 = ColumnDataSource(data=self.dg.data["pmt1"]) #(dg)
+        self.source_SiPM_2 = ColumnDataSource(data=self.dg.data["pmt2"]) #(dg)
         
         # 2D scatter plot
-        self.source_2d = ColumnDataSource(data=self.dg.data2d)
-        self.rolling_source_2d = self.dg.data2d.copy()
+        self.source_2d = ColumnDataSource(data=self.dg.data2d) #(dg)
+        self.rolling_source_2d = self.dg.data2d.copy() #(dg)
 
         # Initialize data sources for the interactive callbacks
         
@@ -625,7 +625,7 @@ class UI:
         self.glyph = self.plot2d.scatter(
             "x",
             "y",
-            source=self.source_2d,
+            source=self.source_2d, #(dg)
             size=2,
             color={"field": "density", "transform": color_mapper},
             line_color=None,
@@ -766,14 +766,14 @@ class UI:
         self.line_sipm_1 = self.plot.line(
             "x",
             "y",
-            source=self.source_SiPM_1,
+            source=self.source_SiPM_1, #(dg)
             color="mediumseagreen",
             legend_label="SiPM_1",
         )
         self.line_sipm_2 = self.plot.line(
             "x",
             "y",
-            source=self.source_SiPM_2,
+            source=self.source_SiPM_2, #(dg)
             color="royalblue",
             legend_label="SiPM_2",
         )
@@ -1361,9 +1361,9 @@ class UI:
         self.scatter_data_points.value = "0"
         #Clean plot_0
         #Source
-        for key in self.rolling_source_2d:
-            self.rolling_source_2d[key] = [np.nan]
-        self.source_2d.data = {key: [] for key in self.source_2d.data}
+        for key in self.rolling_source_2d: #(dg)
+            self.rolling_source_2d[key] = [np.nan] #(dg)
+        self.source_2d.data = {key: [] for key in self.source_2d.data} #(dg)
         #Coordinates
         self.custom_div.text = self._create_divhtml()
 
@@ -1401,9 +1401,9 @@ class UI:
 
     def _save_button_clicked_2(self): #LibreHub
         # Backup the necessary data before saving
-        backup_0 = self.source_2d
-        backup_1 = self.source_SiPM_1
-        backup_2 = self.source_SiPM_2
+        backup_0 = self.source_2d #(dg)
+        backup_1 = self.source_SiPM_1 #(dg)
+        backup_2 = self.source_SiPM_2 #(dg)
         backup_3 = [self.sliders[0].value, self.sliders[1].value, self.sliders[2].value]
         backup_4 = self.bufferspinner.value
         backup_5 = [self.laser_boxes[0].value, self.laser_boxes[1].value, self.laser_boxes[2].value]
@@ -1496,12 +1496,12 @@ class UI:
         if state:
             self.scatter_toggle.label = "Collecting"
             self.scatter_toggle.button_type = "success"
-            self.dg.start_generating()
+            self.dg.start_generating() #(dg)
             self.no_update = 0 #LibreHub
         else:
             self.scatter_toggle.label = "Start"
             self.scatter_toggle.button_type = "primary"
-            self.dg.stop_generating()
+            self.dg.stop_generating() #(dg)
             self.no_update = 1 #LibreHub
 
     def _toggle_sipm_signal(self, attr, old, new):
@@ -1518,13 +1518,13 @@ class UI:
             self.line_sipm_2.visible = True
 
     def _gain1_changed(self, attr, old, new):
-        self.dg.set_gain(new, 1)
+        self.dg.set_gain(new, 1) #(dg)
 
     def _gain2_changed(self, attr, old, new):
-        self.dg.set_gain(new, 2)
+        self.dg.set_gain(new, 2) #(dg)
 
     def _thresh_changed(self, attr, old, new):
-        self.dg.set_thresh(new)
+        self.dg.set_thresh(new) #(dg)
         self.thresh_line.location = self.sliders[3].value
 
     def _spinner_changed(self, attr, old, new):
@@ -1538,12 +1538,12 @@ class UI:
         # Ensure data is being generated and capture 1 second of data
         recorded_1s_data = {
             "sipm_1": {
-                "x": self.source_SiPM_1.data["x"][-samples_per_second:],  # Last 1 second of data
-                "y": self.source_SiPM_1.data["y"][-samples_per_second:],
+                "x": self.source_SiPM_1.data["x"][-samples_per_second:],  # Last 1 second of data #(dg)
+                "y": self.source_SiPM_1.data["y"][-samples_per_second:], #(dg)
             },
             "sipm_2": {
-                "x": self.source_SiPM_2.data["x"][-samples_per_second:],  # Last 1 second of data
-                "y": self.source_SiPM_2.data["y"][-samples_per_second:],
+                "x": self.source_SiPM_2.data["x"][-samples_per_second:],  # Last 1 second of data #(dg)
+                "y": self.source_SiPM_2.data["y"][-samples_per_second:], #(dg)
             },
         }
 
@@ -1626,7 +1626,7 @@ class UI:
         print("Box Select made on original plot")
 
         # Pass box values to the hardware class through the pipe to set gate values
-        self.dg.set_gate_values(dict(new))
+        self.dg.set_gate_values(dict(new)) #(dg)
 
         # Store box values in ui box_select and update box select text
         self.boxselect = new
@@ -1640,7 +1640,7 @@ class UI:
             x0, y0, x1, y1 = new["x0"][0], new["y0"][0], new["x1"][0], new["y1"][0]
 
             # Filter data points that are within the selected box, LibreHub
-            main_data = self.source_2d.data
+            main_data = self.source_2d.data #(dg)
             selected_indices = [
                 i for i in range(len(main_data["x"]))
                 if x0 <= main_data["x"][i] <= x1 and y0 <= main_data["y"][i] <= y1
@@ -1685,7 +1685,7 @@ class UI:
         plot_unit = int(plot_id.split("_")[1])
         next_plot_id = f"plot_{plot_unit + 1}"
         # Pass box values to the hardware class through the pipe to set gate values
-        self.dg.set_gate_values(dict(new))
+        self.dg.set_gate_values(dict(new)) #(dg)
 
         # Store box values in ui box_select and update box select text
         self.sub_boxselect = new
@@ -1783,23 +1783,23 @@ class UI:
         """Pull data from the hardware (in another process) and update the data source and plot"""
         #Live Data Points
         if self.scatter_toggle.label == "Collecting":
-            self.scatter_data_points.value = str(len(self.source_2d.data["x"]))
+            self.scatter_data_points.value = str(len(self.source_2d.data["x"])) #(dg)
 
         # Update sipm data
-        self.source_SiPM_1.data = self.dg.data["pmt1"]
-        self.source_SiPM_2.data = self.dg.data["pmt2"]
+        self.source_SiPM_1.data = self.dg.data["pmt1"] #(dg) 
+        self.source_SiPM_2.data = self.dg.data["pmt2"] #(dg)
 
         if self.no_update == 0 or self.scatter_toggle.label == "Collecting":
-            for key in self.rolling_source_2d:
-                self.rolling_source_2d[key].extend(self.dg.data2d[key])
+            for key in self.rolling_source_2d: #(dg)
+                self.rolling_source_2d[key].extend(self.dg.data2d[key]) #(dg)
                 if self.buffer_length == 0:
-                    self.rolling_source_2d[key] = [np.nan]
-                elif len(self.rolling_source_2d[key]) > self.buffer_length:
-                    self.rolling_source_2d[key] = self.rolling_source_2d[key][
+                    self.rolling_source_2d[key] = [np.nan] #(dg)
+                elif len(self.rolling_source_2d[key]) > self.buffer_length: #(dg)
+                    self.rolling_source_2d[key] = self.rolling_source_2d[key][ #(dg)
                         -self.buffer_length :
                     ]
 
-            self.source_2d.data = self.rolling_source_2d
+            self.source_2d.data = self.rolling_source_2d #(dg)
 
         self.manage_timers()
         self.manage_laser_live_status()
