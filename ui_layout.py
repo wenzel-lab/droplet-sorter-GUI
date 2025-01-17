@@ -2,8 +2,8 @@ import numpy as np
 import concurrency_tools as ct
 import time
 import math
-import pandas as pd # LibreHub
-import json # LibreHub
+import pandas as pd #LibreHub
+import json #LibreHub
 from tkinter import Tk, filedialog #LibreHub
 from data_generator import DataGenerator
 from test_laser import SerialManager #LibreHub
@@ -34,7 +34,7 @@ class UI:
     def __init__(self):
         print("UI init")
         self._init_hardware() #(dg)
-        self._init_COM()
+        self._init_COM() #LibreHub
         self._init_ui()
 
     def _init_hardware(self):
@@ -82,6 +82,26 @@ class UI:
         self.sub_plots_source = {} #LibreHub
         self.sub_boxselect = {"x0": [0], "y0": [0], "x1": [0], "y1": [0]} #LibreHub
         self.div_box_reset = 0 #LibreHub
+        self.databases_dic_code = {
+            "Channel 1 AUC": ["1", "AUC"],
+            "Channel 1 Intensity": ["1", "Intensity"],
+            "Channel 1 Width": ["1", "Width"],
+            "Channel 2 AUC": ["2", "AUC"],
+            "Channel 2 Intensity": ["2", "Intensity"],
+            "Channel 2 Width": ["2", "Width"],
+            "Channel 3 AUC": ["3", "AUC"],
+            "Channel 3 Intensity": ["3", "Intensity"],
+            "Channel 3 Width": ["3", "Width"],
+            "Channel 4 AUC": ["4", "AUC"],
+            "Channel 4 Intensity": ["4", "Intensity"],
+            "Channel 4 Width": ["4", "Width"],
+            "Channel 5 AUC": ["5", "AUC"],
+            "Channel 5 Intensity": ["5", "Intensity"],
+            "Channel 5 Width": ["5", "Width"],
+            "Channel 6 AUC": ["6", "AUC"],
+            "Channel 6 Intensity": ["6", "Intensity"],
+            "Channel 6 Width": ["6", "Width"]
+        } #LibreHub
 
         # Laser module
         self.timer = None #LibreHub
@@ -113,8 +133,8 @@ class UI:
         self.scatter_data_points = self._create_custom_GATE_1() #LibreHub
         self.custom_div = self._create_custom_div()
         self.plot2d = self._create_2d_scatter_plot()
-        self.dynamic_widgets_container = row() #LibreHub
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
+        self.dynamic_widgets_container = row() #LibreHub
         
         # FADS module. Signal plot widgets
         self.enable_sensor = self._create_enable_sensor_button() #LibreHub
@@ -640,31 +660,35 @@ class UI:
         dropdown_boxes_info = [
             {
                 "title" : "Y Channel",
-                "value" : "1",
-                "options" : ["1","2","3"],
+                "value" : "2",
+                "options" : ["1","2","3","4","5","6"],
                 "width" : 100,
                 "margin" : [140,30,20,30],
+                "callback" : self._toggle_plot2d_y_axis
             },
             {
                 "title" : "Y Parameter",
-                "value" : "a",
-                "options" : ["a","b","c"],
+                "value" : "AUC",
+                "options" : ["AUC","Intensity","Width"],
                 "width" : 100,
                 "margin" : [20,30,20,30],
+                "callback" : self._toggle_plot2d_y_axis
             },
             {
                 "title" : "X Channel",
                 "value" : "1",
-                "options" : ["1","2","3"],
+                "options" : ["1","2","3","4","5","6"],
                 "width" : 100,
                 "margin" : [20,30,20,30],
+                "callback" : self._toggle_plot2d_x_axis
             },
             {
                 "title" : "X Parameter",
-                "value" : "a",
-                "options" : ["a","b","c"],
+                "value" : "AUC",
+                "options" : ["AUC","Intensity","Width"],
                 "width" : 100,
                 "margin" : [20,30,20,30],
+                "callback" : self._toggle_plot2d_x_axis
             },
         ]
 
@@ -676,8 +700,9 @@ class UI:
                 options = dropdown_box_info["options"],
                 width = dropdown_box_info["width"],
                 margin = dropdown_box_info["margin"],
-                disabled = True,
+                disabled = False,
             )
+            dropdown_widget.on_change("value", dropdown_box_info["callback"])
             self.dropdown_boxes.append(dropdown_widget)
 
         return self.dropdown_boxes
@@ -1001,6 +1026,57 @@ class UI:
         self.glyph_sub.nonselection_glyph = None  # supress alpha change for nonselected indices bc refresh messes this up
 
         return self.sub_plot2d
+
+    def _create_sub_GATE_dropdown(self,plot_id): #LibreHub
+        dropdown_sub_boxes_info = [
+            {
+                "title" : "Y Channel",
+                "value" : "2",
+                "options" : ["1","2","3","4","5","6"],
+                "width" : 100,
+                "margin" : [140,30,20,30],
+                "callback" : self._toggle_sub_plot2d_y_axis
+            },
+            {
+                "title" : "Y Parameter",
+                "value" : "AUC",
+                "options" : ["AUC","Intensity","Width"],
+                "width" : 100,
+                "margin" : [20,30,20,30],
+                "callback" : self._toggle_sub_plot2d_y_axis
+            },
+            {
+                "title" : "X Channel",
+                "value" : "1",
+                "options" : ["1","2","3","4","5","6"],
+                "width" : 100,
+                "margin" : [20,30,20,30],
+                "callback" : self._toggle_sub_plot2d_x_axis
+            },
+            {
+                "title" : "X Parameter",
+                "value" : "AUC",
+                "options" : ["AUC","Intensity","Width"],
+                "width" : 100,
+                "margin" : [20,30,20,30],
+                "callback" : self._toggle_sub_plot2d_x_axis
+            },
+        ]
+
+        self.dropdown_sub_boxes = []
+        for dropdown_sub_box_info in dropdown_sub_boxes_info:
+            dropdown_sub_widget = Select(
+                title = dropdown_sub_box_info["title"],
+                value = dropdown_sub_box_info["value"],
+                options = dropdown_sub_box_info["options"],
+                width = dropdown_sub_box_info["width"],
+                margin = dropdown_sub_box_info["margin"],
+                disabled = False,
+            )
+            dropdown_sub_widget.on_change("value", lambda attr, old, new, callback=dropdown_sub_box_info["callback"]: callback(attr, old, new, plot_id))
+            self.dropdown_sub_boxes.append(dropdown_sub_widget)
+
+        return self.dropdown_sub_boxes
     
     def _create_threshold_lines(self):
         self.thresh_line = Span(
@@ -1014,10 +1090,10 @@ class UI:
 
     def _create_divhtml(self):
         # Extracting float values from the dictionary
-        float_values = [self.boxselect[key][0] for key in ["x0", "y0", "x1", "y1"]]
+        coordinate_values = [self.boxselect[key][0] for key in ["x0", "y0", "x1", "y1"]]
 
         if self.div_box_reset == 1:
-            float_values = [0,0,0,0]
+            coordinate_values = [0,0,0,0]
 
         # Convert float values to a string format of 10^x
         def to_scientific_with_superscript(value):
@@ -1028,7 +1104,7 @@ class UI:
             return f"{base:.1f} × 10<sup>{exponent}</sup>"
 
         formatted_values = [
-            to_scientific_with_superscript(value) for value in float_values
+            to_scientific_with_superscript(value) for value in coordinate_values
         ]
 
         # Labels for each box
@@ -1055,10 +1131,10 @@ class UI:
     
     def _create_sub_divhtml(self): #LibreHub
         # Extracting float values from the dictionary
-        float_values = [self.sub_boxselect[key][0] for key in ["x0", "y0", "x1", "y1"]]
+        coordinate_values = [self.sub_boxselect[key][0] for key in ["x0", "y0", "x1", "y1"]]
 
         if self.div_box_reset == 1:
-            float_values = [0,0,0,0]
+            coordinate_values = [0,0,0,0]
 
         # Convert float values to a string format of 10^x
         def to_scientific_with_superscript(value):
@@ -1069,7 +1145,7 @@ class UI:
             return f"{base:.1f} × 10<sup>{exponent}</sup>"
 
         formatted_values = [
-            to_scientific_with_superscript(value) for value in float_values
+            to_scientific_with_superscript(value) for value in coordinate_values
         ]
 
         # Labels for each box
@@ -1326,12 +1402,12 @@ class UI:
 
     def _add_widget(self): #LibreHub
         unique_id = f"plot_{self.add_counter}"
-        self.sub_plots_source[unique_id] = ColumnDataSource(data={"x": [0], "y": [0], "density": [0]})
+        self.sub_plots_source[unique_id] = ColumnDataSource(data={"x": [0], "y": [0], "density": [0]}) #(dg)
         new_sub_plot = self._create_2d_scatter_sub_plot(self.sub_plots_source[unique_id])
         self.sub_plots_dic[unique_id] = new_sub_plot
         self._sub_boxselect_changed(unique_id)
         self.add_counter += 1
-        new_dropdown = self._create_GATE_dropdown()
+        new_dropdown = self._create_sub_GATE_dropdown(unique_id)
         for i in new_dropdown:
             i.margin = [20,30,20,30]
         new_attachement = column(new_dropdown)
@@ -1355,11 +1431,11 @@ class UI:
         
     def _reset_button_clicked(self): #LibreHub
         #Solved with variable status self.no_update.
+        #Clean plot_0
         self.no_update = 1
         self.div_box_reset = 1
         
         self.scatter_data_points.value = "0"
-        #Clean plot_0
         #Source
         for key in self.rolling_source_2d: #(dg)
             self.rolling_source_2d[key] = [np.nan] #(dg)
@@ -1504,7 +1580,7 @@ class UI:
             self.dg.stop_generating() #(dg)
             self.no_update = 1 #LibreHub
 
-    def _toggle_sipm_signal(self, attr, old, new):
+    def _toggle_sipm_signal(self, attr, old, new): #LibreHub
         if new == "SiPM_1":
             self.line_sipm_1.visible = True
             self.line_sipm_2.visible = False 
@@ -1516,6 +1592,64 @@ class UI:
         if new == "All":
             self.line_sipm_1.visible = True
             self.line_sipm_2.visible = True
+
+    def _toggle_plot2d_y_axis(self, attr, old, new): #LibreHub
+        if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
+            self.plot2d.yaxis.axis_label = f"Channel {self.dropdown_menu[0].value} {new}"
+        else:
+            self.plot2d.yaxis.axis_label = f"Channel {new} {self.dropdown_menu[1].value}"
+        # Check if the updated y-axis label exists in the dictionary
+        if self.plot2d.yaxis.axis_label in self.databases_dic_code:
+                a = self.plot2d.yaxis.axis_label
+                b = self.plot2d.xaxis.axis_label
+                # Request data from the database
+                print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}") #(dg)
+                # self.source_2d = {for key in self.database} #(dg)
+
+    def _toggle_plot2d_x_axis(self, attr, old, new): #LibreHub
+        if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
+            self.plot2d.xaxis.axis_label = f"Channel {self.dropdown_menu[2].value} {new}"
+        else:
+            self.plot2d.xaxis.axis_label = f"Channel {new} {self.dropdown_menu[3].value}"
+         # Check if the updated x-axis label exists in the dictionary
+        if self.plot2d.xaxis.axis_label in self.databases_dic_code:
+                a = self.plot2d.yaxis.axis_label
+                b = self.plot2d.xaxis.axis_label
+                # Request data from the database
+                print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}") #(dg)
+                # self.source_2d = {for key in self.database} #(dg)
+    
+    def _toggle_sub_plot2d_y_axis(self, attr, old, new, plot_id): #LibreHub
+        plot_unit = int(plot_id.split("_")[1])
+        dyn_plot = self.dynamic_widgets_container.children[plot_unit].children[1].children[0]
+        sub_dropdown_menu = self.dynamic_widgets_container.children[plot_unit].children[1].children[1].children
+        if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
+            dyn_plot.yaxis.axis_label = f"Channel {sub_dropdown_menu[0].value} {new}"
+        else:
+            dyn_plot.yaxis.axis_label = f"Channel {new} {sub_dropdown_menu[1].value}"
+        # Check if the updated y-axis label exists in the dictionary
+        if dyn_plot.yaxis.axis_label in self.databases_dic_code:
+                a = dyn_plot.yaxis.axis_label
+                b = dyn_plot.xaxis.axis_label
+                # Request data from the database
+                print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}") #(dg)
+                # self.sub_plots_source[unique_id] = {for key in self.database} #(dg)
+
+    def _toggle_sub_plot2d_x_axis(self, attr, old, new, plot_id): #LibreHub
+        plot_unit = int(plot_id.split("_")[1])
+        dyn_plot = self.dynamic_widgets_container.children[plot_unit].children[1].children[0]
+        sub_dropdown_menu = self.dynamic_widgets_container.children[plot_unit].children[1].children[1].children
+        if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
+            dyn_plot.xaxis.axis_label = f"Channel {sub_dropdown_menu[2].value} {new}"
+        else:
+            dyn_plot.xaxis.axis_label = f"Channel {new} {sub_dropdown_menu[3].value}"
+        # Check if the updated x-axis label exists in the dictionary
+        if dyn_plot.xaxis.axis_label in self.databases_dic_code:
+                a = dyn_plot.yaxis.axis_label
+                b = dyn_plot.xaxis.axis_label
+                # Request data from the database
+                print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}")
+                # self.sub_plots_source[unique_id] = {for key in self.database} #(dg)
 
     def _gain1_changed(self, attr, old, new):
         self.dg.set_gain(new, 1) #(dg)
@@ -1780,15 +1914,16 @@ class UI:
         self.plot.title.text = f"Update Rate: {1/rate_seconds_per_update:.01f} Hz ({rate_seconds_per_update*1000:.00f} ms)"
 
     def update_ui(self):
-        """Pull data from the hardware (in another process) and update the data source and plot"""
-        #Live Data Points
+        """Pull data from the hardware (in another process) and update the data source and plot"""               
+        # Total scatter data points
         if self.scatter_toggle.label == "Collecting":
             self.scatter_data_points.value = str(len(self.source_2d.data["x"])) #(dg)
 
-        # Update sipm data
+        # Update sipm data (The following is based on the simulation module)
         self.source_SiPM_1.data = self.dg.data["pmt1"] #(dg) 
         self.source_SiPM_2.data = self.dg.data["pmt2"] #(dg)
 
+        # Live scatter data points (The following is based on the simulation module)
         if self.no_update == 0 or self.scatter_toggle.label == "Collecting":
             for key in self.rolling_source_2d: #(dg)
                 self.rolling_source_2d[key].extend(self.dg.data2d[key]) #(dg)
