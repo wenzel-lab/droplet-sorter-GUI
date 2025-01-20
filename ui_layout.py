@@ -142,11 +142,12 @@ class UI:
         self.plot = self._create_signal_plot()
         self.detector_rec_button = self. _create_DETECTOR_button() #LibreHub
         self.signal_sliders = self._create_sliders()
+        self.noise_boxes = self._create_noise_layout() #LibreHub
 
         # FADS module. Sorting widgets
-        self.pulse_boxes = self._create_SORTING_layout() #LibreHub
-        self.pulse_dead_slider = self._create_SORTING_slider() #LibreHub
-        self.pulse_button = self._create_SORTING_button() #LibreHub
+        self.pulse_boxes = self._create_pulse_layout() #LibreHub
+        self.pulse_dead_slider = self._create_pulse_slider() #LibreHub
+        self.pulse_button = self._create_pulse_button() #LibreHub
 
         # Save data module
         self.save_fads_button = self._create_FADS_EXPORT_save() #LibreHub
@@ -234,11 +235,21 @@ class UI:
                             self.signal_sliders[0],
                             self.signal_sliders[1],
                             self.signal_sliders[2], #LibreHub
-                        ),
-                        column(
-                            self.signal_sliders[3],
+                            self.signal_sliders[3], #LibreHub
                             self.signal_sliders[4], #LibreHub
                             self.signal_sliders[5], #LibreHub
+                        ),
+                        column(
+                            self.signal_sliders[6],
+                            self.signal_sliders[7], #LibreHub
+                            self.signal_sliders[8], #LibreHub
+                            self.signal_sliders[9], #LibreHub
+                            self.signal_sliders[10], #LibreHub
+                            self.signal_sliders[11], #LibreHub
+                        ),
+                        column(
+                            self.noise_boxes[0], #LibreHub
+                            self.noise_boxes[1], #LibreHub
                         ),
                         
                     ),
@@ -850,7 +861,40 @@ class UI:
                 "title": "Detector 3 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain2_changed,
+                "callback": self._gain3_changed,
+                "disabled" : True,
+            },
+            { #LibreHub
+                "start": 0.01,
+                "end": 1,
+                "value": 0.5,
+                "step": 0.01,
+                "title": "Detector 4 Gain",
+                "bar_color": "royalblue",
+                "margin" : [20, 10, 20, 50],
+                "callback": self._gain4_changed,
+                "disabled" : True,
+            },
+            { #LibreHub
+                "start": 0.01,
+                "end": 1,
+                "value": 0.5,
+                "step": 0.01,
+                "title": "Detector 5 Gain",
+                "bar_color": "royalblue",
+                "margin" : [20, 10, 20, 50],
+                "callback": self._gain5_changed,
+                "disabled" : True,
+            },
+            { #LibreHub
+                "start": 0.01,
+                "end": 1,
+                "value": 0.5,
+                "step": 0.01,
+                "title": "Detector 6 Gain",
+                "bar_color": "royalblue",
+                "margin" : [20, 10, 20, 50],
+                "callback": self._gain6_changed,
                 "disabled" : True,
             },
             {
@@ -886,6 +930,39 @@ class UI:
                 "callback": self._thresh_changed,
                 "disabled" : True,
             },
+            { #LibreHub
+                "start": 0,
+                "end": 2,
+                "value": self.thresh,
+                "step": 0.01,
+                "title": "Noise Threshold 4",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 250],
+                "callback": self._thresh_changed,
+                "disabled" : True,
+            },
+            { #LibreHub
+                "start": 0,
+                "end": 2,
+                "value": self.thresh,
+                "step": 0.01,
+                "title": "Noise Threshold 5",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 250],
+                "callback": self._thresh_changed,
+                "disabled" : True,
+            },
+            { #LibreHub
+                "start": 0,
+                "end": 2,
+                "value": self.thresh,
+                "step": 0.01,
+                "title": "Noise Threshold 6",
+                "bar_color": "mediumseagreen",
+                "margin" : [20, 10, 20, 250],
+                "callback": self._thresh_changed,
+                "disabled" : True,
+            },
         ]
 
         self.sliders = []
@@ -905,8 +982,35 @@ class UI:
 
         return self.sliders
     
-    def _create_SORTING_layout(self): #LibreHub
-        sorting_layout_info = [
+    def _create_noise_layout(self): #LibreHub
+        noise_layout_info = [
+            {
+                "title" : "Noise (width)",
+                "value" : "123",
+                "disabled" : False,
+            },
+            {
+                "title" : "Noise (auc)",
+                "value" : "123",
+                "disabled" : False,
+            },
+        ]
+        
+        self.noise_boxes = []
+        for noise_info in noise_layout_info:
+            custom_noise_box = TextInput(
+                title = noise_info["title"],
+                value = noise_info["value"],
+                disabled = noise_info["disabled"],
+                width = 100,
+                margin = [120,20,20,100],
+            )
+            self.noise_boxes.append(custom_noise_box)
+
+        return self.noise_boxes
+
+    def _create_pulse_layout(self): #LibreHub
+        pulse_layout_info = [
             {
                 "title" : "Frequency [kHz]",
                 "value" : "123",
@@ -939,21 +1043,21 @@ class UI:
             },
         ]
         
-        self.sorting_boxes = []
-        for sorting_info in sorting_layout_info:
-            custom_sorting_box = TextInput(
-                title = sorting_info["title"],
-                value = sorting_info["value"],
-                disabled = sorting_info["disabled"],
+        self.pulse_boxes = []
+        for pulse_info in pulse_layout_info:
+            custom_pulse_box = TextInput(
+                title = pulse_info["title"],
+                value = pulse_info["value"],
+                disabled = pulse_info["disabled"],
                 width = 100,
                 margin = [20,20,20,20],
             )
-            self.sorting_boxes.append(custom_sorting_box)
+            self.pulse_boxes.append(custom_pulse_box)
 
-        return self.sorting_boxes
+        return self.pulse_boxes
     
-    def _create_SORTING_slider(self): #LibreHub
-        self.SORTING_dead_slider = Slider(
+    def _create_pulse_slider(self): #LibreHub
+        self.pulse_dead_slider = Slider(
             start = 0,
             end = 1,
             value = 0.5,
@@ -964,23 +1068,23 @@ class UI:
             disabled = True,
         )
 
-        return self.SORTING_dead_slider
+        return self.pulse_dead_slider
     
-    def _create_SORTING_button(self): #LibreHub
-        self.SORTING_button = Button(
+    def _create_pulse_button(self): #LibreHub
+        self.pulse_button = Button(
             label = "On",
             button_type = "primary",
             margin = [40,0,0,196],
             disabled = True,
         )
 
-        return self.SORTING_button
+        return self.pulse_button
     
     def _create_logs_EXPORT_save(self): #LibreHub
         self.save_button = Button(
             label="Save logs",
             button_type="primary",
-            margin = [39,0,0,20],
+            margin = [39,0,50,20],
             )
         self.save_button.on_click(self._save_button_clicked_1)
         
@@ -990,7 +1094,7 @@ class UI:
         self.save_button = Button(
             label="Save data",
             button_type="primary",
-            margin = [39,0,0,20],
+            margin = [39,0,50,20],
             )
         self.save_button.on_click(self._save_button_clicked_2)
         
@@ -1657,9 +1761,24 @@ class UI:
     def _gain2_changed(self, attr, old, new):
         self.dg.set_gain(new, 2) #(dg)
 
+    # Add def for each gain as needed
+    def _gain3_changed(self, attr, old, new):
+        pass #(dg)
+    
+    def _gain4_changed(self, attr, old, new):
+        pass #(dg)
+
+    def _gain5_changed(self, attr, old, new):
+        pass #(dg)
+
+    def _gain6_changed(self, attr, old, new):
+        pass #(dg)
+
     def _thresh_changed(self, attr, old, new):
         self.dg.set_thresh(new) #(dg)
-        self.thresh_line.location = self.sliders[3].value
+        self.thresh_line.location = self.sliders[6].value
+
+    # Add def for each threshold as needed, in the case of the simulation, seem to be combined between channels.
 
     def _spinner_changed(self, attr, old, new):
         self.buffer_length = self.bufferspinner.value
