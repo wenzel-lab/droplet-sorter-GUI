@@ -5,7 +5,7 @@ import math
 import pandas as pd #LibreHub
 import json #LibreHub
 from tkinter import Tk, filedialog #LibreHub
-from data_generator import DataGenerator
+from data_acquistion import DataAcquisition
 from test_laser import SerialManager #LibreHub
 from timer import ResettableTimer #LibreHub
 
@@ -39,7 +39,8 @@ class UI:
 
     def _init_hardware(self):
         # Create an instance of the hardware class that will run in a separate process.
-        self.dg = ct.ObjectInSubprocess(DataGenerator) #(dg)
+        # self.dg = ct.ObjectInSubprocess(DataGenerator) #(dg)
+        self.fpga_data = ct.ObjectInSubprocess(DataAcquisition)
 
     def _init_COM(self): #LibreHub
         # Connect to the serial port
@@ -59,12 +60,12 @@ class UI:
         # Initialize data sources for the generated data
 
         # Signal plot
-        self.source_SiPM_1 = ColumnDataSource(data=self.dg.data["pmt1"]) #(dg)
-        self.source_SiPM_2 = ColumnDataSource(data=self.dg.data["pmt2"]) #(dg)
+        self.source_SiPM_1 = ColumnDataSource(data=self.fpga_data.data["pmt1"]) #(dg)
+        self.source_SiPM_2 = ColumnDataSource(data=self.fpga_data.data["pmt2"]) #(dg)
         
         # 2D scatter plot
-        self.source_2d = ColumnDataSource(data=self.dg.data2d) #(dg)
-        self.rolling_source_2d = self.dg.data2d.copy() #(dg)
+        self.source_2d = ColumnDataSource(data=self.fpga_data.data2d) #(dg)
+        self.rolling_source_2d = self.fpga_data.data2d.copy() #(dg)
 
         # Initialize data sources for the interactive callbacks
         
@@ -1676,12 +1677,12 @@ class UI:
         if state:
             self.scatter_toggle.label = "Collecting"
             self.scatter_toggle.button_type = "success"
-            self.dg.start_generating() #(dg)
+            self.fpga_data.start_acquisition() #(dg)
             self.no_update = 0 #LibreHub
         else:
             self.scatter_toggle.label = "Start"
             self.scatter_toggle.button_type = "primary"
-            self.dg.stop_generating() #(dg)
+            self.fpga_data.stop_acquisiton() #(dg)
             self.no_update = 1 #LibreHub
 
     def _toggle_sipm_signal(self, attr, old, new): #LibreHub
@@ -1756,10 +1757,10 @@ class UI:
                 # self.sub_plots_source[unique_id] = {for key in self.database} #(dg)
 
     def _gain1_changed(self, attr, old, new):
-        self.dg.set_gain(new, 1) #(dg)
+        self.fpga_data.set_gain(new, 1) #(dg)
 
     def _gain2_changed(self, attr, old, new):
-        self.dg.set_gain(new, 2) #(dg)
+        self.fpga_data.set_gain(new, 2) #(dg)
 
     # Add def for each gain as needed
     def _gain3_changed(self, attr, old, new):
@@ -1775,7 +1776,7 @@ class UI:
         pass #(dg)
 
     def _thresh_changed(self, attr, old, new):
-        self.dg.set_thresh(new) #(dg)
+        self.fpga_data.set_thresh(new) #(dg)
         self.thresh_line.location = self.sliders[6].value
 
     # Add def for each threshold as needed, in the case of the simulation, seem to be combined between channels.
@@ -1879,7 +1880,7 @@ class UI:
         print("Box Select made on original plot")
 
         # Pass box values to the hardware class through the pipe to set gate values
-        self.dg.set_gate_values(dict(new)) #(dg)
+        self.fpga_data.set_gate_values(dict(new)) #(dg)
 
         # Store box values in ui box_select and update box select text
         self.boxselect = new
@@ -1938,7 +1939,7 @@ class UI:
         plot_unit = int(plot_id.split("_")[1])
         next_plot_id = f"plot_{plot_unit + 1}"
         # Pass box values to the hardware class through the pipe to set gate values
-        self.dg.set_gate_values(dict(new)) #(dg)
+        self.fpga_data.set_gate_values(dict(new)) #(dg)
 
         # Store box values in ui box_select and update box select text
         self.sub_boxselect = new
@@ -2039,13 +2040,13 @@ class UI:
             self.scatter_data_points.value = str(len(self.source_2d.data["x"])) #(dg)
 
         # Update sipm data (The following is based on the simulation module)
-        self.source_SiPM_1.data = self.dg.data["pmt1"] #(dg) 
-        self.source_SiPM_2.data = self.dg.data["pmt2"] #(dg)
+        self.source_SiPM_1.data = self.fpga_data.data["pmt1"] #(dg) 
+        self.source_SiPM_2.data = self.fpga_data.data["pmt2"] #(dg)
 
         # Live scatter data points (The following is based on the simulation module)
         if self.no_update == 0 or self.scatter_toggle.label == "Collecting":
             for key in self.rolling_source_2d: #(dg)
-                self.rolling_source_2d[key].extend(self.dg.data2d[key]) #(dg)
+                self.rolling_source_2d[key].extend(self.fpga_data.data2d[key]) #(dg)
                 if self.buffer_length == 0:
                     self.rolling_source_2d[key] = [np.nan] #(dg)
                 elif len(self.rolling_source_2d[key]) > self.buffer_length: #(dg)
