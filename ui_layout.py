@@ -134,15 +134,18 @@ class UI:
         self.custom_div = self._create_custom_div()
         self.plot2d = self._create_2d_scatter_plot()
         self.dropdown_menu = self._create_GATE_dropdown() #LibreHub
+        self.last_droplet_stat = self._create_last_droplet_stat_layout() #LibreHub
         self.dynamic_widgets_container = row() #LibreHub
         
         # FADS module. Signal plot widgets
         self.enable_sensor = self._create_enable_sensor_button() #LibreHub
+        self.master_reference = self._create_master_channel_dropdown() #LibreHub
         self.detector_dropdown = self._create_DETECTOR_dropdown() #LibreHub
         self.plot = self._create_signal_plot()
         self.detector_rec_button = self. _create_DETECTOR_button() #LibreHub
         self.signal_sliders = self._create_sliders()
         self.noise_boxes = self._create_noise_layout() #LibreHub
+        self.noise_channel_boxes = self._create_noise_dropdown() #LibreHub
 
         # FADS module. Sorting widgets
         self.pulse_boxes = self._create_pulse_layout() #LibreHub
@@ -206,6 +209,11 @@ class UI:
                     column(
                         self.custom_div,
                         self.plot2d,
+                        row(
+                            self.last_droplet_stat[0],
+                            self.last_droplet_stat[1],
+                            self.last_droplet_stat[2],
+                        ),
                     ),
                     column(
                         self.dropdown_menu[0], #LibreHub
@@ -225,7 +233,10 @@ class UI:
                         self.enable_sensor[4], #LibreHub
                         self.enable_sensor[5], #LibreHub
                     ),
-                    self.detector_dropdown, #LibreHub
+                    row(
+                        self.master_reference, #LibreHub
+                        self.detector_dropdown, #LibreHub                      
+                    ),
                     row(
                         self.plot,
                     ),
@@ -248,8 +259,14 @@ class UI:
                             self.signal_sliders[11], #LibreHub
                         ),
                         column(
-                            self.noise_boxes[0], #LibreHub
-                            self.noise_boxes[1], #LibreHub
+                            row(
+                                self.noise_boxes[0], #LibreHub
+                                self.noise_channel_boxes[0], #LibreHub
+                            ),
+                            row(
+                                self.noise_boxes[1], #LibreHub
+                                self.noise_channel_boxes[1], #LibreHub
+                            ),
                         ),
                         
                     ),
@@ -718,6 +735,38 @@ class UI:
 
         return self.dropdown_boxes
     
+    def _create_last_droplet_stat_layout(self): #LibreHub
+        last_droplet_stat_layout_info = [
+            {
+                "title" : "cur_droplet_intensity",
+                "value" : "123",
+                "disabled" : True,
+            },
+            {
+                "title" : "cur_droplet_width",
+                "value" : "123",
+                "disabled" : True,
+            },
+            {
+                "title" : "cur_droplet_area",
+                "value" : "123",
+                "disabled" : True,
+            },
+        ]
+        
+        self.last_droplet_stat_boxes = []
+        for last_droplet_stat_info in last_droplet_stat_layout_info:
+            custom_last_droplet_stat_box = TextInput(
+                title = last_droplet_stat_info["title"],
+                value = last_droplet_stat_info["value"],
+                disabled = last_droplet_stat_info["disabled"],
+                width = 100,
+                margin = [20,20,20,35],
+            )
+            self.last_droplet_stat_boxes.append(custom_last_droplet_stat_box)
+
+        return self.last_droplet_stat_boxes
+    
     def _create_enable_sensor_button(self): #LibreHub
         sorting_sensor_status = [
             {
@@ -774,16 +823,29 @@ class UI:
 
     def _create_DETECTOR_dropdown(self): #LibreHub
         self.detector_selection = Select(
-            title = "Detector",
+            title = "Detector Visualization",
             value = "All",
             options = ["All","SiPM_1","SiPM_2","SiPM_3","SiPM_4","SiPM_5","SiPM_6"],
             width = 100,
-            margin = [20,0,0,420],
+            margin = [20,0,0,20],
             disabled = False,
         )
         self.detector_selection.on_change("value",self._toggle_sipm_signal)
 
         return self.detector_selection
+    
+    def _create_master_channel_dropdown(self): #LibreHub
+        self.master_selection = Select(
+            title = "Master Detector",
+            value = "All",
+            options = ["All","SiPM_1","SiPM_2","SiPM_3","SiPM_4","SiPM_5","SiPM_6"],
+            width = 100,
+            margin = [20,0,0,371],
+            disabled = False,
+        )
+        self.master_selection.on_change("value",self._toggle_master_channel)
+
+        return self.master_selection
     
     def _create_signal_plot(self):
         plot_margin = (30, 0, 0, 10)
@@ -987,11 +1049,13 @@ class UI:
             {
                 "title" : "Noise (width)",
                 "value" : "123",
+                "callback" : self._width_noise_input,
                 "disabled" : False,
             },
             {
                 "title" : "Noise (auc)",
                 "value" : "123",
+                "callback" : self._auc_noise_input,
                 "disabled" : False,
             },
         ]
@@ -1005,9 +1069,45 @@ class UI:
                 width = 100,
                 margin = [120,20,20,100],
             )
+            custom_noise_box.on_change("value", noise_info["callback"])
             self.noise_boxes.append(custom_noise_box)
 
         return self.noise_boxes
+    
+    def _create_noise_dropdown(self): #LibreHub
+        noise_dropdown_boxes_info = [
+            {
+                "title" : "Channel",
+                "value" : "2",
+                "options" : ["1","2","3","4","5","6"],
+                "width" : 100,
+                "margin" : [120,20,20,0],
+                "callback" : self._width_noise_channel_selection
+            },
+            {
+                "title" : "Channel",
+                "value" : "2",
+                "options" : ["1","2","3","4","5","6"],
+                "width" : 100,
+                "margin" : [120,20,20,0],
+                "callback" : self._auc_noise_channel_selection
+            },
+        ]
+
+        self.noise_dropdown_boxes = []
+        for noise_dropdown_box_info in noise_dropdown_boxes_info:
+            noise_dropdown_widget = Select(
+                title = noise_dropdown_box_info["title"],
+                value = noise_dropdown_box_info["value"],
+                options = noise_dropdown_box_info["options"],
+                width = noise_dropdown_box_info["width"],
+                margin = noise_dropdown_box_info["margin"],
+                disabled = False,
+            )
+            noise_dropdown_widget.on_change("value", noise_dropdown_box_info["callback"])
+            self.noise_dropdown_boxes.append(noise_dropdown_widget)
+
+        return self.noise_dropdown_boxes
 
     def _create_pulse_layout(self): #LibreHub
         pulse_layout_info = [
@@ -1504,6 +1604,18 @@ class UI:
             elif button.label == "SiPM_6":
                 print("6'")
 
+    def _width_noise_channel_selection(self, attr, old, new): #LibreHub
+        pass
+
+    def _width_noise_input(self, attr, old, new): #LibreHub
+        pass
+
+    def _auc_noise_channel_selection(self, attr, old, new): #LibreHub
+        pass
+
+    def _auc_noise_input(self, attr, old, new): #LibreHub
+        pass
+
     def _add_widget(self): #LibreHub
         unique_id = f"plot_{self.add_counter}"
         self.sub_plots_source[unique_id] = ColumnDataSource(data={"x": [0], "y": [0], "density": [0]}) #(dg)
@@ -1696,6 +1808,18 @@ class UI:
         if new == "All":
             self.line_sipm_1.visible = True
             self.line_sipm_2.visible = True
+        # Add more detectors as needed
+
+    def _toggle_master_channel(self, attr, old, new): #LibreHub
+        if new == "SiPM_1":
+            print("master set to 1")
+        
+        if new == "SiPM_2":
+            print("master set to 2")
+
+        if new == "All":
+            print("master set to all")
+        # Add more detectors as needed
 
     def _toggle_plot2d_y_axis(self, attr, old, new): #LibreHub
         if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
