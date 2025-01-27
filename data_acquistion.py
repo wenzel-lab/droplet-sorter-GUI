@@ -72,8 +72,35 @@ class DataAcquisition:
         self.thresh = 0.03
         self.gate_val = {"x0": [0], "y0": [0], "x1": [0], "y1": [0]}
 
-        self.ws_client = WebSocketClient() 
-        self.ws_client.start()  # Inicia el cliente WebSocket en un hilo
+        #self.ws_client = WebSocketClient() 
+        #self.ws_client.start()  # Inicia el cliente WebSocket en un hilo
+
+        self.all_data = {
+            "timestamp": 1018633.0,
+            "droplet_id": 419,
+            "all_data": {
+                "min_intensity_thresh": [16209, 16209, 16209, 16209, 16209, 16209],
+                "low_intensity_thresh": [16234, 16234, 16234, 16234, 16234, 16234],
+                "high_intensity_thresh": [900, 900, 900, 900, 900, 900],
+                "min_width_thresh": [1, 1, 1, 1, 1, 1],
+                "low_width_thresh": [255, 255, 255, 255, 255, 255],
+                "high_width_thresh": [3437096703, 3437096703, 3437096703, 3437096703, 3437096703, 3437096703],
+                "min_area_thresh": [1, 1, 1, 1, 1, 1],
+                "low_area_thresh": [255, 255, 255, 255, 255, 255],
+                "high_area_thresh": [0, 0, 0, 0, 0, 0],
+                "fads_reset": 0,
+                "sort_delay": 100,
+                "sort_duration": 50,
+                "droplet_id": 419,
+                "cur_droplet_intensity": 1,
+                "cur_droplet_width": 1,
+                "droplet_classification": 265,
+                "enabled_channels": 3,
+                "droplet_sensing_addr": 0,
+                "raw_voltage": 16336
+            },
+            "voltage_history": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }
 
         self.vars_from_ws = variables_from_ws
 
@@ -106,10 +133,12 @@ class DataAcquisition:
     ):  
 
         # Updating the voltages
-        t = np.arange(0,len(self.ws_client.data_received["voltage_history"]))
+        #t = np.arange(0,len(self.ws_client.data_received["voltage_history"]))
+        t = np.arange(0,len(self.all_data["voltage_history"]))
 
         for channel_idx in range(1, num_channels + 1):
-            signal = np.array(self.ws_client.data_received["voltage_history"])
+            #signal = np.array(self.ws_client.data_received["voltage_history"])
+            signal = np.array(self.all_data["voltage_history"])
             self.data[f"pmt{channel_idx}"] = {"x": t, "y": signal}
 
     """ Analyze Drop Parameters from PMT Signals """
@@ -268,7 +297,8 @@ class DataAcquisition:
         #     sensing_addr = self.ws_client.data_received["all_data"]["droplet_sensing_addr"]
         #     register_value = self.ws_client.data_received["all_data"][var_name][sensing_addr]
         # else:
-        register_value = self.ws_client.data_received["all_data"][var_name]
+        #register_value = self.ws_client.data_received["all_data"][var_name]
+        register_value = self.all_data["all_data"][var_name]
         return register_value
     
     def get_file_history(self):

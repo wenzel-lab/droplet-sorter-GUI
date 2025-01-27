@@ -1052,12 +1052,14 @@ class UI:
                 "value" : "123",
                 "callback" : self._width_noise_input,
                 "disabled" : False,
+                "callback" : self._noise_width_changed,
             },
             {
                 "title" : "Noise (auc)",
                 "value" : "123",
                 "callback" : self._auc_noise_input,
                 "disabled" : False,
+                "callback" : self._noise_auc_changed,
             },
         ]
         
@@ -1794,7 +1796,7 @@ class UI:
         else:
             self.scatter_toggle.label = "Start"
             self.scatter_toggle.button_type = "primary"
-            self.fpga_data.stop_acquisiton() #(dg)
+            self.fpga_data.stop_acquisition() #(dg)
             self.no_update = 1 #LibreHub
 
     def _toggle_sipm_signal(self, attr, old, new): #LibreHub
@@ -1902,6 +1904,14 @@ class UI:
     def _thresh_changed(self, attr, old, new):
         self.fpga_data.set_thresh(new) #(dg)
         self.thresh_line.location = self.sliders[6].value
+
+    def _noise_width_changed(self, attr, old, new):
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        pass
+
+    def _noise_auc_changed(self, attr, old, new):
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        pass
 
     # Add def for each threshold as needed, in the case of the simulation, seem to be combined between channels.
 
