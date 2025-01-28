@@ -7,7 +7,7 @@ from scipy.integrate import simpson
 from scipy.stats import gaussian_kde
 
 from websocket_client import WebSocketClient
-from http_client import set_fpga_register
+from http_client import set_fpga_register, get_file
 import time
 
 variables_from_ws = {
@@ -26,6 +26,7 @@ variables_from_ws = {
     "droplet_id": 0,
     "cur_droplet_intensity": 0,
     "cur_droplet_width": 0,
+    "cur_time_us": 0,
     "droplet_classification": 0,
     "enabled_channels": 0,
     "droplet_sensing_addr": 0,
@@ -141,7 +142,8 @@ class DataAcquisition:
         
 
         if np.any(drops) == False:
-            print('No peaks detected in reference channel')
+            # print('No peaks detected in reference channel')
+            pass
 
         else:
             # Calculate widths (fwhm) of the peaks to define the time range for each drop
@@ -272,6 +274,4 @@ class DataAcquisition:
         return register_value
     
     def get_file_history(self):
-        #TO DO funcion para rescatar archivo txt con historia desde fpga. 
-        # Generar solicitud con http
-        pass
+        get_file()

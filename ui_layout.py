@@ -1672,6 +1672,9 @@ class UI:
                 print("Unsupported file format selected.")
         else:
             print("No file selected.")
+
+        # Save file from fpga
+        self.fpga_data.get_file_history()
     
     def _toggle_changed(self, state):
         if state:
