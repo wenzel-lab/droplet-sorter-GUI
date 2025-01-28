@@ -145,6 +145,7 @@ class DataAcquisition:
 
         #print(self.ws_client.data_received["voltage_history"], type(self.ws_client.data_received["voltage_history"]))
         t = np.arange(0,len(self.ws_client.data_received["voltage_history"]))
+        print(self.ws_client.data_received["voltage_history"])
         #t = np.arange(0,len(self.all_data["voltage_history"]))
 
         for channel_idx in range(1, num_channels + 1):
@@ -152,6 +153,7 @@ class DataAcquisition:
             #print(type(self.ws_client.data_received["voltage_history"]))
             #print(signal, type(signal))
             self.data[f"pmt{channel_idx}"] = {"x": t, "y": signal}
+            print(type(self.data), type(self.data["pmt1"]["x"]), type(self.data["pmt1"]["y"]))
 
     """ Analyze Drop Parameters from PMT Signals """
 
