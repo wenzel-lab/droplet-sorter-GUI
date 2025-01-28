@@ -965,10 +965,10 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
-                "title": "Noise Threshold 1",
+                "title": "Noise intensity 1",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
+                "callback": self._noise_intensity_changed,
                 "disabled" : False,
             },
             { #LibreHub
@@ -976,10 +976,10 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
-                "title": "Noise Threshold 2",
+                "title": "Noise intensity 2",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
+                "callback": self._noise_intensity_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -987,10 +987,10 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
-                "title": "Noise Threshold 3",
+                "title": "Noise intensity 3",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
+                "callback": self._noise_intensity_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -998,10 +998,10 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
-                "title": "Noise Threshold 4",
+                "title": "Noise intensity 4",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
+                "callback": self._noise_intensity_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -1009,10 +1009,10 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
-                "title": "Noise Threshold 5",
+                "title": "Noise intensity 5",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
+                "callback": self._noise_intensity_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -1020,10 +1020,10 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
-                "title": "Noise Threshold 6",
+                "title": "Noise intensity 6",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
-                "callback": self._thresh_changed,
+                "callback": self._noise_intensity_changed,
                 "disabled" : True,
             },
         ]
@@ -1049,14 +1049,14 @@ class UI:
         noise_layout_info = [
             {
                 "title" : "Noise (width)",
-                "value" : "123",
+                "value" : "FPGA ok",
                 "callback" : self._width_noise_input,
                 "disabled" : False,
                 "callback" : self._noise_width_changed,
             },
             {
                 "title" : "Noise (auc)",
-                "value" : "123",
+                "value" : "FPGA ok",
                 "callback" : self._auc_noise_input,
                 "disabled" : False,
                 "callback" : self._noise_auc_changed,
@@ -1118,31 +1118,37 @@ class UI:
                 "title" : "Frequency [kHz]",
                 "value" : "123",
                 "disabled" : False,
+                "callback" : self._frequency_pulse_input,
             },
             {
                 "title" : "Voltage [kV]",
                 "value" : "123",
                 "disabled" : False,
+                "callback" : self._voltage_pulse_input,
             },
             {
                 "title" : "Pulse Duration [time]",
                 "value" : "123",
                 "disabled" : False,
+                "callback" : self._duration_pulse_input,
             },
             {
                 "title" : "Delay [time]",
                 "value" : "123",
                 "disabled" : False,
+                "callback" : self._delay_pulse_input,
             },
             {
                 "title" : "Sorted Droplets",
                 "value" : "123",
                 "disabled" : True,
+                "callback" : self._sorted_droplets_pulse_input,
             },
             {
                 "title" : "Total Events",
                 "value" : "123",
                 "disabled" : True,
+                "callback" : self._total_events_pulse_input,
             },
         ]
         
@@ -1155,6 +1161,7 @@ class UI:
                 width = 100,
                 margin = [20,20,20,20],
             )
+            custom_pulse_box.on_change("value", pulse_info["callback"])
             self.pulse_boxes.append(custom_pulse_box)
 
         return self.pulse_boxes
@@ -1651,6 +1658,8 @@ class UI:
     def _reset_button_clicked(self): #LibreHub
         #Solved with variable status self.no_update.
         #Clean plot_0
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0
+        print("FPGA reseted")
         self.no_update = 1
         self.div_box_reset = 1
         
@@ -1884,36 +1893,73 @@ class UI:
 
     def _gain1_changed(self, attr, old, new):
         self.fpga_data.set_gain(new, 1) #(dg)
+        print("gain 1 sent to FPGA")
 
     def _gain2_changed(self, attr, old, new):
         self.fpga_data.set_gain(new, 2) #(dg)
+        print("gain 2 sent to FPGA")
 
     # Add def for each gain as needed
     def _gain3_changed(self, attr, old, new):
-        pass #(dg)
+        #self.fpga_data.set_gain(new, 3) #(dg)
+        pass
     
     def _gain4_changed(self, attr, old, new):
-        pass #(dg)
+        #self.fpga_data.set_gain(new, 4) #(dg)
+        pass
 
     def _gain5_changed(self, attr, old, new):
-        pass #(dg)
+        #self.fpga_data.set_gain(new, 5) #(dg)
+        pass
 
     def _gain6_changed(self, attr, old, new):
-        pass #(dg)
+        #self.fpga_data.set_gain(new, 6) #(dg)
+        pass
 
-    def _thresh_changed(self, attr, old, new):
+    def _noise_intensity_changed(self, attr, old, new):
         self.fpga_data.set_thresh(new) #(dg)
         self.thresh_line.location = self.sliders[6].value
+        print("noise intensity threshold sent to FPGA")
 
     def _noise_width_changed(self, attr, old, new):
+        # Add if statement for channel dropdown widget 
         #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        print("noise width threshold sent to FPGA")
         pass
 
     def _noise_auc_changed(self, attr, old, new):
+        # Add if statement for channel dropdown widget
         #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        print("noise auc threshold sent to FPGA")
         pass
 
     # Add def for each threshold as needed, in the case of the simulation, seem to be combined between channels.
+
+    def _delay_pulse_input(self, attr, old, new):
+        #Another module for pulse control?
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        print("delay pulse sent to FPGA")
+
+    def _duration_pulse_input(self, attr, old, new):
+        #Another module for pulse control?
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        print("pulse duration sent to FPGA")
+
+    def _frequency_pulse_input(self, attr, old, new):
+        #Another module for pulse control?
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        print("pulse frequency sent to FPGA")
+
+    def _voltage_pulse_input(self, attr, old, new):
+        #Another module for pulse control?
+        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
+        print("pulse voltage sent to FPGA")
+
+    def _sorted_droplets_pulse_input(self, attr, old, new):
+        pass
+
+    def _total_events_pulse_input(self, attr, old, new):
+        pass
 
     def _spinner_changed(self, attr, old, new):
         self.buffer_length = self.bufferspinner.value
@@ -2015,6 +2061,7 @@ class UI:
 
         # Pass box values to the hardware class through the pipe to set gate values
         self.fpga_data.set_gate_values(dict(new)) #(dg)
+        print("Gate values sent to FPGA")
 
         # Store box values in ui box_select and update box select text
         self.boxselect = new
@@ -2074,6 +2121,7 @@ class UI:
         next_plot_id = f"plot_{plot_unit + 1}"
         # Pass box values to the hardware class through the pipe to set gate values
         self.fpga_data.set_gate_values(dict(new)) #(dg)
+        print("Gate values sent to FPGA")
 
         # Store box values in ui box_select and update box select text
         self.sub_boxselect = new
@@ -2172,6 +2220,11 @@ class UI:
         # Total scatter data points
         if self.scatter_toggle.label == "Collecting":
             self.scatter_data_points.value = str(len(self.source_2d.data["x"])) #(dg)
+        
+        # Scatter parameters
+        self.last_droplet_stat[0].value = "FPGA ok" #str(self.fpga_data.update_from_fpga_registers("cur_droplet_intensity")) #(dg)
+        self.last_droplet_stat[1].value = "FPGA ok" #str(self.fpga_data.update_from_fpga_registers("cur_droplet_width")) #(dg)
+        self.last_droplet_stat[2].value = "FPGA ok" #str(self.fpga_data.update_from_fpga_registers("cur_droplet_auc")) #(dg)
 
         # Update sipm data (The following is based on the simulation module)
         self.source_SiPM_1.data = self.fpga_data.data["pmt1"] #(dg) 
