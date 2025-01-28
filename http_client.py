@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime
 
-RP_IP = "192.168.100.45"
+RP_IP = "192.168.31.29"
 HTTP_PORT = 8000
 
 
