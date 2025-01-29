@@ -5,7 +5,7 @@ import threading
 
 
 # Dirección del servidor WebSocket (Red Pitaya)
-RP_IP = "192.168.100.45"
+RP_IP = "192.168.31.29"
 WS_PORT = 8000
 HTTP_URL = f"http://{RP_IP}:{WS_PORT}"
 
@@ -56,5 +56,3 @@ class WebSocketClient():
 if __name__ == "__main__":
     websocket_client = WebSocketClient()
     asyncio.run(websocket_client._connect())
-
-
