@@ -24,14 +24,17 @@ variables_from_ws = {
     "sort_delay": 0,
     "sort_duration": 0,
     "droplet_id": 0,
-    "cur_droplet_intensity": 0,
-    "cur_droplet_width": 0,
+    "cur_droplet_intensity": [], # x6
+    "cur_droplet_width": [], # x6
+    "cur_droplet_area": [], # x6
     "cur_time_us": 0,
     "droplet_classification": 0,
     "enabled_channels": 0,
     "droplet_sensing_addr": 0,
     "raw_voltage": 0,
-    "analog_voltage": 0
+    "adc_values": [], # x6
+    "update_cycle": 0,
+    "cur_adc_data": [] #x6
 }
 
 variables_to_modify = {
@@ -104,6 +107,7 @@ class DataAcquisition:
         # }
 
         self.vars_from_ws = variables_from_ws
+        self.set_fpga_register_value("enabled_channels", 1)
 
     """ Start, Stop, Continue Methods to Run in the Background """
 
@@ -144,16 +148,17 @@ class DataAcquisition:
         #     print("No voltage history available.")
 
         #print(self.ws_client.data_received["voltage_history"], type(self.ws_client.data_received["voltage_history"]))
-        t = np.arange(0,len(self.ws_client.data_received["voltage_history"]))
-        print(self.ws_client.data_received["voltage_history"])
-        #t = np.arange(0,len(self.all_data["voltage_history"]))
+        if self.ws_client.data_received:
+            t = np.arange(0,len(self.ws_client.data_received["voltage_history"]["voltage_history_1"]))
+            #t = np.arange(0,len(self.all_data["voltage_history"]))
 
-        for channel_idx in range(1, num_channels + 1):
-            signal = np.array(self.ws_client.data_received["voltage_history"])
-            #print(type(self.ws_client.data_received["voltage_history"]))
-            #print(signal, type(signal))
-            self.data[f"pmt{channel_idx}"] = {"x": t, "y": signal}
-            print(type(self.data), type(self.data["pmt1"]["x"]), type(self.data["pmt1"]["y"]))
+            for channel_idx in range(1, num_channels + 1):
+                signal = np.array(self.ws_client.data_received["voltage_history"]["voltage_history_1"])
+                #print(type(self.ws_client.data_received["voltage_history"]))
+                for i in signal:
+                    if i != 0:
+                        print(signal)
+                self.data[f"pmt{channel_idx}"] = {"x": t, "y": signal}
 
     """ Analyze Drop Parameters from PMT Signals """
 
