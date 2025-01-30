@@ -857,7 +857,7 @@ class UI:
             x_axis_label="Time(ms)",
             y_axis_label="Voltage",
             toolbar_location=None,
-            x_range=(0, 200),
+            x_range=(0, 100),
             y_range=(0, 1.2),
             margin=plot_margin,
             output_backend="webgl"
@@ -1049,14 +1049,14 @@ class UI:
         noise_layout_info = [
             {
                 "title" : "Noise (width)",
-                "value" : "FPGA ok",
+                "value" : "-",
                 "callback" : self._width_noise_input,
                 "disabled" : False,
                 "callback" : self._noise_width_changed,
             },
             {
                 "title" : "Noise (auc)",
-                "value" : "FPGA ok",
+                "value" : "-",
                 "callback" : self._auc_noise_input,
                 "disabled" : False,
                 "callback" : self._noise_auc_changed,
@@ -1802,11 +1802,13 @@ class UI:
             self.scatter_toggle.button_type = "success"
             self.fpga_data.start_acquisition() #(dg)
             self.no_update = 0 #LibreHub
+            print("if")
         else:
             self.scatter_toggle.label = "Start"
             self.scatter_toggle.button_type = "primary"
             self.fpga_data.stop_acquisition() #(dg)
             self.no_update = 1 #LibreHub
+            print("else")
 
     def _toggle_sipm_signal(self, attr, old, new): #LibreHub
         if new == "SiPM_1":
@@ -2222,9 +2224,10 @@ class UI:
             self.scatter_data_points.value = str(len(self.source_2d.data["x"])) #(dg)
         
         # Scatter parameters
-        self.last_droplet_stat[0].value = "FPGA ok" #str(self.fpga_data.update_from_fpga_registers("cur_droplet_intensity")) #(dg)
-        self.last_droplet_stat[1].value = "FPGA ok" #str(self.fpga_data.update_from_fpga_registers("cur_droplet_width")) #(dg)
-        self.last_droplet_stat[2].value = "FPGA ok" #str(self.fpga_data.update_from_fpga_registers("cur_droplet_auc")) #(dg)
+        print(self.fpga_data.ws_client.data_received["all_data"])
+        self.last_droplet_stat[0].value = str(self.fpga_data.ws_client.data_received["all_data"]["cur_droplet_intensity"]) #(dg)
+        self.last_droplet_stat[1].value = str(self.fpga_data.ws_client.data_received["all_data"]["cur_droplet_width"]) #(dg)
+        self.last_droplet_stat[2].value = str(self.fpga_data.ws_client.data_received["all_data"]["cur_droplet_area"]) #(dg)
 
         # Update sipm data (The following is based on the simulation module)
         self.source_SiPM_1.data = self.fpga_data.data["pmt1"] #(dg) 
