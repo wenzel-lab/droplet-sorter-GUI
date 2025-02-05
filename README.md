@@ -6,103 +6,89 @@ This repository holds the GUI code, the interaface mockups, and the development 
 
 Follow us! [#twitter](https://twitter.com/WenzelLab), [#YouTube](https://www.youtube.com/@librehub), [#LinkedIn](https://www.linkedin.com/company/92802424), [#instagram](https://www.instagram.com/wenzellab/), [#Printables](https://www.printables.com/@WenzelLab), [#LIBREhub website](https://librehub.github.io), [#IIBM website](https://ingenieriabiologicaymedica.uc.cl/en/people/faculty/821-tobias-wenzel)
 
-#### 
+---
 
-Piccolo provides tools for droplet processing instruments:
-
-1. Generate test data of droplets in microfluidic fluorescence-activated droplet sorter 
-2. Display and interact with test data across different channels and set sorting gates in a UI
-
-
-![ScreenShot](/preview_bokeh_screenshot.png?raw=true)
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Dependencies](#dependencies)
+- [Contribute](#contribute)
+- [License](#license)
+- [Contacts](#contacts)
 
 ---
 
-#### Quickstart
-
-Run with `bokeh serve --show ui_layout.py`
-
+## Introduction
+Piccolo provides tools for droplet processing instruments. This project provides a user-friendly interface for sorting droplets and visualizing data from multiple detectors. It is built using Bokeh for interactive visualizations.
 
 ---
 
-#### Dependencies
-
-| Dependency | Version |
-|------------|---------|
-| ***python*** | 3.12.3 |
-| ***bokeh*** | 3.4.1 |
-| _libgcc_mutex | 0.1 |
-| _openmp_mutex | 4.5 |
-| bzip2 | 1.0.8 |
-| ca-certificates | 2024.2.2 |
-| colorama | 0.4.6 |
-| contourpy | 1.2.1 |
-| freetype | 2.12.1 |
-| jinja2 | 3.1.3 |
-| lcms2 | 2.16 |
-| ld_impl_linux-64 | 2.40 |
-| lerc | 4.0.0 |
-| libblas | 3.9.0 |
-| libcblas | 3.9.0 |
-| libdeflate | 1.20 |
-| libexpat | 2.6.2 |
-| libffi | 3.4.2 |
-| libgcc-ng | 13.2.0 |
-| libgfortran-ng | 13.2.0 |
-| libgfortran5 | 13.2.0 |
-| libgomp | 13.2.0 |
-| libjpeg-turbo | 3.0.0 |
-| liblapack | 3.9.0 |
-| libnsl | 2.0.1 |
-| libopenblas | 0.3.27 |
-| libpng | 1.6.43 |
-| libsqlite | 3.45.2 |
-| libstdcxx-ng | 13.2.0 |
-| libtiff | 4.6.0 |
-| libuuid | 2.38.1 |
-| libwebp-base | 1.4.0 |
-| libxcb | 1.15 |
-| libxcrypt | 4.4.36 |
-| libzlib | 1.2.13 |
-| markupsafe | 2.1.5 |
-| ncurses | 6.4.20240210 |
-| numpy | 1.26.4 |
-| openjpeg | 2.5.2 |
-| openssl | 3.2.1 |
-| packaging | 24.0 |
-| pandas | 2.2.2 |
-| pillow | 10.3.0 |
-| pip | 24.0 |
-| pthread-stubs | 0.4 |
-| pyserial | 3.5 |
-| python-dateutil | 2.9.0 |
-| python-tzdata | 2024.1 |
-| python_abi | 3.12 |
-| pytz | 2024.1 |
-| pyyaml | 6.0.1 |
-| readline | 8.2 |
-| scipy | 1.13.0 |
-| setuptools | 69.5.1 |
-| six | 1.16.0 |
-| tk | 8.6.13 |
-| tornado | 6.4 |
-| tqdm | 4.66.2 |
-| tzdata | 2024a |
-| wheel | 0.43.0 |
-| xorg-libxau | 1.0.11 |
-| xorg-libxdmcp | 1.1.3 |
-| xyzservices | 2024.4.0 |
-| xz | 5.2.6 |
-| yaml | 0.2.5 |
-| zstd | 1.5.5 |
+## Features
+- Interactive data visualization of droplets in microfluidic fluorescence-activated droplet sorter
+- Display and interact with data across different channels and set sorting gates in a UI
+- Customizable settings for sorting and laser modules
+- Support for multiple detectors and RS232 lasers
 
 ---
 
-#### Contacts
+## Installation
 
-Joaquín Acosta - Pontificia Universidad Católica de Chile
-Tobias Wenzel - Pontificia Universidad Católica de Chile
-Kendra Nyberg - Calico Life Sciences LLC
+> [!WARNING]
+> Firstly, make sure you have conda installation and environment in your device:
+```
+conda info
+conda create --name <your environment>
+conda activate <your environment>
+```
+
+To install the necessary dependencies, make use of our .yml file and run:
+
+` conda env update -n <your environment> --file bokeh_2.yml`
+
+---
+
+## Usage
+> [!IMPORTANT] 
+> Make sure all dependencies are installed, active and properly located.
+
+Run: 
+
+` bokeh serve --show ui_layout.py`
+
+---
+
+## Organization
+
+1. #### LASER CONTROLS:
+    ![ScreenShot](/images/laser_controls.png?raw=true)
+
+2. #### DROPLET VISUALIZATION:
+    ![ScreenShot](/images/droplet_visualization.png?raw=true)
+
+3. #### SIGNAL VISUALIZATION:
+    ![ScreenShot](/images/signal_visualization.png?raw=true)
+
+4. #### SORTING CONTROLS:
+    ![ScreenShot](/images/sorting_controls.png?raw=true)
+
+---
+
+## Dependencies
+
+The main dependencies for this project are:
+
+- `bokeh`
+- `numpy`
+- `pandas`
+- `pyserial`
+- `requests`
+- `scipy`
+- `tornado`
+- `websockets`
+
+These and additional dependencies can be found in `bokeh_2.yml`.
 
 ---
 
@@ -117,3 +103,12 @@ For interactions in our team and with the community applies the [GOSH Code of Co
 ## License
 
 Apache 2.0
+
+
+---
+
+#### Contacts
+
+Joaquín Acosta - Pontificia Universidad Católica de Chile
+Tobias Wenzel - Pontificia Universidad Católica de Chile
+Kendra Nyberg - Calico Life Sciences LLC
