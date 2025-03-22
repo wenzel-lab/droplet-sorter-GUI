@@ -5,7 +5,7 @@ import threading
 
 
 # Dirección del servidor WebSocket (Red Pitaya)
-RP_IP = "192.168.31.29"
+RP_IP = "192.168.100.45"
 WS_PORT = 8000
 HTTP_URL = f"http://{RP_IP}:{WS_PORT}"
 

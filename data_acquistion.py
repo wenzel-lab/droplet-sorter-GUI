@@ -57,9 +57,9 @@ variables_to_modify = {
 }
 
 class DataAcquisition:
-    NUM_CHANNELS = 2
+    NUM_CHANNELS = 1
     SAMPLING_INTERVAL = 0.02  # time units in ms
-    SIGNAL_DURATION = 100
+    SIGNAL_DURATION = 50
     BASELINE = 0.01
     DROP_INTERVAL = 1
     DROP_WIDTH = 0.2
@@ -109,7 +109,7 @@ class DataAcquisition:
         # }
 
         self.vars_from_ws = variables_from_ws
-        self.set_fpga_register_value("signal_duration", 100)
+        self.set_fpga_register_value("signal_duration", 50)
         self.set_fpga_register_value("enabled_channels", 1)
 
     """ Start, Stop, Continue Methods to Run in the Background """
@@ -156,7 +156,6 @@ class DataAcquisition:
             for channel_idx in range(1, num_channels + 1):
                 signal = np.array(self.ws_client.data_received["voltage_history"][f"voltage_history_{channel_idx}"])
                 signal = signal * self.gain[channel_idx - 1]
-                print(signal)
                 #for i in signal:
                 #    if i != 0:
                 #        print(signal)
