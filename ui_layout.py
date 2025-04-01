@@ -9,6 +9,8 @@ from data_acquistion import DataAcquisition
 from test_laser import SerialManager #LibreHub
 from timer import ResettableTimer #LibreHub
 
+from functools import partial
+
 from bokeh.layouts import column, row
 from bokeh.models import (
     ColumnDataSource,
@@ -857,7 +859,7 @@ class UI:
             x_axis_label="Time(ms)",
             y_axis_label="Voltage",
             toolbar_location=None,
-            x_range=(0, 100),
+            x_range=(0, 50),
             y_range=(0, 1.2),
             margin=plot_margin,
             output_backend="webgl"
@@ -899,10 +901,11 @@ class UI:
                 "end": 1,
                 "value": 0.5,
                 "step": 0.01,
+                "name": "1",
                 "title": "Detector 1 Gain",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain1_changed,
+                "callback": self._gain_changed,
                 "disabled" : False,
             },
             {
@@ -910,10 +913,11 @@ class UI:
                 "end": 1,
                 "value": 0.5,
                 "step": 0.01,
+                "name": "2",
                 "title": "Detector 2 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain2_changed,
+                "callback": self._gain_changed,#self._gain2_changed,
                 "disabled" : False,
             },
             { #LibreHub
@@ -921,10 +925,11 @@ class UI:
                 "end": 1,
                 "value": 0.5,
                 "step": 0.01,
+                "name": "3",
                 "title": "Detector 3 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain3_changed,
+                "callback": self._gain_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -932,10 +937,11 @@ class UI:
                 "end": 1,
                 "value": 0.5,
                 "step": 0.01,
+                "name": "4",
                 "title": "Detector 4 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain4_changed,
+                "callback": self._gain_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -943,10 +949,11 @@ class UI:
                 "end": 1,
                 "value": 0.5,
                 "step": 0.01,
+                "name": "5",
                 "title": "Detector 5 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain5_changed,
+                "callback": self._gain_changed,
                 "disabled" : True,
             },
             { #LibreHub
@@ -954,10 +961,11 @@ class UI:
                 "end": 1,
                 "value": 0.5,
                 "step": 0.01,
+                "name": "6",
                 "title": "Detector 6 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain6_changed,
+                "callback": self._gain_changed,
                 "disabled" : True,
             },
             {
@@ -965,6 +973,7 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
+                "name": "1",
                 "title": "Noise intensity 1",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
@@ -976,55 +985,60 @@ class UI:
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
+                "name": "2",
                 "title": "Noise intensity 2",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
                 "callback": self._noise_intensity_changed,
-                "disabled" : True,
+                "disabled" : False,
             },
             { #LibreHub
                 "start": 0,
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
+                "name": "3",
                 "title": "Noise intensity 3",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
                 "callback": self._noise_intensity_changed,
-                "disabled" : True,
+                "disabled" : False,
             },
             { #LibreHub
                 "start": 0,
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
+                "name": "4",
                 "title": "Noise intensity 4",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
                 "callback": self._noise_intensity_changed,
-                "disabled" : True,
+                "disabled" : False,
             },
             { #LibreHub
                 "start": 0,
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
+                "name": "5",
                 "title": "Noise intensity 5",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
                 "callback": self._noise_intensity_changed,
-                "disabled" : True,
+                "disabled" : False,
             },
             { #LibreHub
                 "start": 0,
                 "end": 2,
                 "value": self.thresh,
                 "step": 0.01,
+                "name": "6",
                 "title": "Noise intensity 6",
                 "bar_color": "mediumseagreen",
                 "margin" : [20, 10, 20, 250],
                 "callback": self._noise_intensity_changed,
-                "disabled" : True,
+                "disabled" : False,
             },
         ]
 
@@ -1035,12 +1049,13 @@ class UI:
                 end=slider_info["end"],
                 value=slider_info["value"],
                 step=slider_info["step"],
+                name=slider_info["name"],
                 title=slider_info["title"],
                 bar_color=slider_info["bar_color"],
                 margin=slider_info["margin"],
                 disabled=slider_info["disabled"],
             )
-            slider.on_change("value", slider_info["callback"])
+            slider.on_change("value", partial(slider_info["callback"],slider.name))
             self.sliders.append(slider)
 
         return self.sliders
@@ -1051,15 +1066,13 @@ class UI:
                 "title" : "Noise (width)",
                 "value" : "-",
                 "callback" : self._width_noise_input,
-                "disabled" : False,
-                "callback" : self._noise_width_changed,
+                "disabled" : False
             },
             {
                 "title" : "Noise (auc)",
                 "value" : "-",
                 "callback" : self._auc_noise_input,
-                "disabled" : False,
-                "callback" : self._noise_auc_changed,
+                "disabled" : False
             },
         ]
         
@@ -1588,6 +1601,7 @@ class UI:
         if button.button_type == "danger":
             button.button_type = "success"
             if button.label == "SiPM_1":
+                print(self.fpga_data.update_from_fpga_registers("enabled_channels"))
                 print("1")
             elif button.label == "SiPM_2":
                 print("2")
@@ -1615,16 +1629,22 @@ class UI:
                 print("6'")
 
     def _width_noise_channel_selection(self, attr, old, new): #LibreHub
-        pass
+        if self.noise_boxes[0].value!="-":
+            self.fpga_data.set_fpga_register_value("min_width_thresh",int(self.noise_boxes[0].value),0,1,int(new)-1)
+            print("Noise width threshold sent to FPGA")
 
     def _width_noise_input(self, attr, old, new): #LibreHub
-        pass
+        self.fpga_data.set_fpga_register_value("min_width_thresh",int(new),0,1,int(self.noise_dropdown_boxes[0].value)-1)
+        print("Noise width threshold sent to FPGA")
 
     def _auc_noise_channel_selection(self, attr, old, new): #LibreHub
-        pass
+        if self.noise_boxes[1].value!="-":
+            self.fpga_data.set_fpga_register_value("min_area_thresh",int(self.noise_boxes[1].value),0,1,int(new)-1)
+            print("Noise area threshold sent to FPGA")
 
     def _auc_noise_input(self, attr, old, new): #LibreHub
-        pass
+        self.fpga_data.set_fpga_register_value("min_area_thresh",int(new),0,1,int(self.noise_dropdown_boxes[1].value)-1)
+        print("Noise area threshold sent to FPGA")
 
     def _add_widget(self): #LibreHub
         unique_id = f"plot_{self.add_counter}"
@@ -1658,7 +1678,7 @@ class UI:
     def _reset_button_clicked(self): #LibreHub
         #Solved with variable status self.no_update.
         #Clean plot_0
-        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0
+        self.fpga_data.set_fpga_register_value("fads_reset", 1)
         print("FPGA reseted")
         self.no_update = 1
         self.div_box_reset = 1
@@ -1826,10 +1846,28 @@ class UI:
 
     def _toggle_master_channel(self, attr, old, new): #LibreHub
         if new == "SiPM_1":
-            print("master set to 1")
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 0, 0, 1)
+            print("Master set to 1")
         
         if new == "SiPM_2":
-            print("master set to 2")
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 1, 0, 1)
+            print("Master set to 2")
+
+        if new == "SiPM_3":
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 2, 0, 1)
+            print("Master set to 3")
+
+        if new == "SiPM_4":
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 3, 0, 1)
+            print("Master set to 4")
+
+        if new == "SiPM_5":
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 4, 0, 1)
+            print("Master set to 5")
+
+        if new == "SiPM_6":
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 5, 0, 1)
+            print("Master set to 6")    
 
         if new == "All":
             print("master set to all")
@@ -1893,59 +1931,23 @@ class UI:
                 print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}")
                 # self.sub_plots_source[unique_id] = {for key in self.database} #(dg)
 
-    def _gain1_changed(self, attr, old, new):
-        self.fpga_data.set_gain(new, 1) #(dg)
-        print("gain 1 sent to FPGA")
+    def _gain_changed(self, id, attr, old, new):
+        print(id)
+        print(type(new))
 
-    def _gain2_changed(self, attr, old, new):
-        self.fpga_data.set_gain(new, 2) #(dg)
-        print("gain 2 sent to FPGA")
-
-    # Add def for each gain as needed
-    def _gain3_changed(self, attr, old, new):
-        #self.fpga_data.set_gain(new, 3) #(dg)
-        pass
-    
-    def _gain4_changed(self, attr, old, new):
-        #self.fpga_data.set_gain(new, 4) #(dg)
-        pass
-
-    def _gain5_changed(self, attr, old, new):
-        #self.fpga_data.set_gain(new, 5) #(dg)
-        pass
-
-    def _gain6_changed(self, attr, old, new):
-        #self.fpga_data.set_gain(new, 6) #(dg)
-        pass
-
-    def _noise_intensity_changed(self, attr, old, new):
-        self.fpga_data.set_thresh(new) #(dg)
-        self.thresh_line.location = self.sliders[6].value
-        print("noise intensity threshold sent to FPGA")
-
-    def _noise_width_changed(self, attr, old, new):
-        # Add if statement for channel dropdown widget 
-        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
-        print("noise width threshold sent to FPGA")
-        pass
-
-    def _noise_auc_changed(self, attr, old, new):
-        # Add if statement for channel dropdown widget
-        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
-        print("noise auc threshold sent to FPGA")
-        pass
-
-    # Add def for each threshold as needed, in the case of the simulation, seem to be combined between channels.
+    def _noise_intensity_changed(self, id, attr, old, new):
+        self.fpga_data.set_thresh(int(id),new)
+        self.thresh_line.location = self.sliders[6+int(id)-1].value
+        print("Noise intensity threshold sent to FPGA")
 
     def _delay_pulse_input(self, attr, old, new):
         #Another module for pulse control?
-        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
-        print("delay pulse sent to FPGA")
+        self.fpga_data.set_fpga_register_value("sort_delay", int(new), 0, 1)
+        print("Pulse delay sent to FPGA")
 
     def _duration_pulse_input(self, attr, old, new):
-        #Another module for pulse control?
-        #self.fpga_data.set_fpga_register_value(self, var_name, value, addr=0) #(dg)
-        print("pulse duration sent to FPGA")
+        self.fpga_data.set_fpga_register_value("sort_duration", int(new), 0, 1)
+        print("Pulse duration sent to FPGA")
 
     def _frequency_pulse_input(self, attr, old, new):
         #Another module for pulse control?
@@ -2122,6 +2124,7 @@ class UI:
         plot_unit = int(plot_id.split("_")[1])
         next_plot_id = f"plot_{plot_unit + 1}"
         # Pass box values to the hardware class through the pipe to set gate values
+        print(new)
         self.fpga_data.set_gate_values(dict(new)) #(dg)
         print("Gate values sent to FPGA")
 
@@ -2224,7 +2227,6 @@ class UI:
             self.scatter_data_points.value = str(len(self.source_2d.data["x"])) #(dg)
         
         # Scatter parameters
-        #print(self.fpga_data.ws_client.data_received["all_data"])
         self.last_droplet_stat[0].value = str(self.fpga_data.update_from_fpga_registers("cur_droplet_intensity")[0])
         self.last_droplet_stat[1].value = str(self.fpga_data.update_from_fpga_registers("cur_droplet_width")[0]) #(dg)
         self.last_droplet_stat[2].value = str(self.fpga_data.update_from_fpga_registers("cur_droplet_area")[0]) #(dg)
