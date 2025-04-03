@@ -9,6 +9,10 @@ def set_fpga_register(data):
     response = requests.post(f"http://{RP_IP}:{HTTP_PORT}/register", json=data)
     print(response.json())
 
+def set_gain(data):
+    response = requests.post(f"http://{RP_IP}:{HTTP_PORT}/setgain", json=data)
+    print(response.json())
+
 def get_file():
     response = requests.get(f"http://{RP_IP}:{HTTP_PORT}/download")
     if response.status_code == 200:

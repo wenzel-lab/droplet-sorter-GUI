@@ -64,6 +64,10 @@ class UI:
         # Signal plot
         self.source_SiPM_1 = ColumnDataSource(data=self.fpga_data.data["pmt1"]) #(dg)
         self.source_SiPM_2 = ColumnDataSource(data=self.fpga_data.data["pmt2"]) #(dg)
+        self.source_SiPM_3 = ColumnDataSource(data=self.fpga_data.data["pmt3"]) #(dg)
+        self.source_SiPM_4 = ColumnDataSource(data=self.fpga_data.data["pmt4"]) #(dg)
+        self.source_SiPM_5 = ColumnDataSource(data=self.fpga_data.data["pmt5"]) #(dg)
+        self.source_SiPM_6 = ColumnDataSource(data=self.fpga_data.data["pmt6"]) #(dg)
         
         # 2D scatter plot
         self.source_2d = ColumnDataSource(data=self.fpga_data.data2d) #(dg)
@@ -878,6 +882,34 @@ class UI:
             color="royalblue",
             legend_label="SiPM_2",
         )
+        self.line_sipm_3 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_3, #(dg)
+            color="red",
+            legend_label="SiPM_3",
+        )
+        self.line_sipm_4 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_4, #(dg)
+            color="orange",
+            legend_label="SiPM_4",
+        )
+        self.line_sipm_5 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_5, #(dg)
+            color="purple",
+            legend_label="SiPM_5",
+        )
+        self.line_sipm_6 = self.plot.line(
+            "x",
+            "y",
+            source=self.source_SiPM_6, #(dg)
+            color="brown",
+            legend_label="SiPM_6",
+        )
         self._create_threshold_lines()
 
         return self.plot
@@ -1601,49 +1633,72 @@ class UI:
         if button.button_type == "danger":
             button.button_type = "success"
             if button.label == "SiPM_1":
-                print(self.fpga_data.update_from_fpga_registers("enabled_channels"))
-                print("1")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-1] + "1" + current_enabled_channels[self.fpga_data.num_channels:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_2":
-                print("2")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-2] + "1" + current_enabled_channels[self.fpga_data.num_channels-1:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_3":
-                print("3")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-3] + "1" + current_enabled_channels[self.fpga_data.num_channels-2:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_4":
-                print("4")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-4] + "1" + current_enabled_channels[self.fpga_data.num_channels-3:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_5":
-                print("5")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-5] + "1" + current_enabled_channels[self.fpga_data.num_channels-4:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_6":
-                print("6")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-6] + "1" + current_enabled_channels[self.fpga_data.num_channels-5:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
         else:
             button.button_type = "danger"
             if button.label == "SiPM_1":
-                print("1'")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-1] + "0" + current_enabled_channels[self.fpga_data.num_channels:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_2":
-                print("2'")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-2] + "0" + current_enabled_channels[self.fpga_data.num_channels-1:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_3":
-                print("3'")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-3] + "0" + current_enabled_channels[self.fpga_data.num_channels-2:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_4":
-                print("4'")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-4] + "0" + current_enabled_channels[self.fpga_data.num_channels-3:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_5":
-                print("5'")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-5] + "0" + current_enabled_channels[self.fpga_data.num_channels-4:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
             elif button.label == "SiPM_6":
-                print("6'")
+                current_enabled_channels = self.fpga_data.update_from_fpga_registers("enabled_channels")
+                current_enabled_channels = current_enabled_channels[:self.fpga_data.num_channels-6] + "0" + current_enabled_channels[self.fpga_data.num_channels-5:]
+                self.fpga_data.set_fpga_register_value("enabled_channels", int(current_enabled_channels,2), 0)
 
     def _width_noise_channel_selection(self, attr, old, new): #LibreHub
         if self.noise_boxes[0].value!="-":
-            self.fpga_data.set_fpga_register_value("min_width_thresh",int(self.noise_boxes[0].value),0,1,int(new)-1)
+            self.fpga_data.set_fpga_register_value("min_width_thresh",int(self.noise_boxes[0].value),0,int(new)-1)
             print("Noise width threshold sent to FPGA")
 
     def _width_noise_input(self, attr, old, new): #LibreHub
-        self.fpga_data.set_fpga_register_value("min_width_thresh",int(new),0,1,int(self.noise_dropdown_boxes[0].value)-1)
+        self.fpga_data.set_fpga_register_value("min_width_thresh",int(new),0,int(self.noise_dropdown_boxes[0].value)-1)
         print("Noise width threshold sent to FPGA")
 
     def _auc_noise_channel_selection(self, attr, old, new): #LibreHub
         if self.noise_boxes[1].value!="-":
-            self.fpga_data.set_fpga_register_value("min_area_thresh",int(self.noise_boxes[1].value),0,1,int(new)-1)
+            self.fpga_data.set_fpga_register_value("min_area_thresh",int(self.noise_boxes[1].value),0,int(new)-1)
             print("Noise area threshold sent to FPGA")
 
     def _auc_noise_input(self, attr, old, new): #LibreHub
-        self.fpga_data.set_fpga_register_value("min_area_thresh",int(new),0,1,int(self.noise_dropdown_boxes[1].value)-1)
+        self.fpga_data.set_fpga_register_value("min_area_thresh",int(new),0,int(self.noise_dropdown_boxes[1].value)-1)
         print("Noise area threshold sent to FPGA")
 
     def _add_widget(self): #LibreHub
@@ -1678,7 +1733,7 @@ class UI:
     def _reset_button_clicked(self): #LibreHub
         #Solved with variable status self.no_update.
         #Clean plot_0
-        self.fpga_data.set_fpga_register_value("fads_reset", 1)
+        self.fpga_data.set_fpga_register_value("fads_reset", 1, 0)
         print("FPGA reseted")
         self.no_update = 1
         self.div_box_reset = 1
@@ -1834,39 +1889,83 @@ class UI:
         if new == "SiPM_1":
             self.line_sipm_1.visible = True
             self.line_sipm_2.visible = False 
+            self.line_sipm_3.visible = False 
+            self.line_sipm_4.visible = False 
+            self.line_sipm_5.visible = False 
+            self.line_sipm_6.visible = False 
         
         if new == "SiPM_2":
             self.line_sipm_1.visible = False
             self.line_sipm_2.visible = True
+            self.line_sipm_3.visible = False 
+            self.line_sipm_4.visible = False 
+            self.line_sipm_5.visible = False 
+            self.line_sipm_6.visible = False 
+
+        if new == "SiPM_3":
+            self.line_sipm_1.visible = False
+            self.line_sipm_2.visible = False
+            self.line_sipm_3.visible = True 
+            self.line_sipm_4.visible = False 
+            self.line_sipm_5.visible = False 
+            self.line_sipm_6.visible = False 
+
+        if new == "SiPM_4":
+            self.line_sipm_1.visible = False
+            self.line_sipm_2.visible = False
+            self.line_sipm_3.visible = False 
+            self.line_sipm_4.visible = True 
+            self.line_sipm_5.visible = False 
+            self.line_sipm_6.visible = False 
+
+        if new == "SiPM_5":
+            self.line_sipm_1.visible = False
+            self.line_sipm_2.visible = False
+            self.line_sipm_3.visible = False 
+            self.line_sipm_4.visible = False 
+            self.line_sipm_5.visible = True
+            self.line_sipm_6.visible = False 
+
+        if new == "SiPM_6":
+            self.line_sipm_1.visible = False
+            self.line_sipm_2.visible = False
+            self.line_sipm_3.visible = False 
+            self.line_sipm_4.visible = False 
+            self.line_sipm_5.visible = False 
+            self.line_sipm_6.visible = True
 
         if new == "All":
             self.line_sipm_1.visible = True
             self.line_sipm_2.visible = True
+            self.line_sipm_3.visible = True
+            self.line_sipm_4.visible = True
+            self.line_sipm_5.visible = True
+            self.line_sipm_6.visible = True 
         # Add more detectors as needed
 
     def _toggle_master_channel(self, attr, old, new): #LibreHub
         if new == "SiPM_1":
-            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 0, 0, 1)
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 0, 0)
             print("Master set to 1")
         
         if new == "SiPM_2":
-            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 1, 0, 1)
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 1, 0)
             print("Master set to 2")
 
         if new == "SiPM_3":
-            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 2, 0, 1)
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 2, 0)
             print("Master set to 3")
 
         if new == "SiPM_4":
-            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 3, 0, 1)
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 3, 0)
             print("Master set to 4")
 
         if new == "SiPM_5":
-            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 4, 0, 1)
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 4, 0)
             print("Master set to 5")
 
         if new == "SiPM_6":
-            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 5, 0, 1)
+            self.fpga_data.set_fpga_register_value("droplet_sensing_addr", 5, 0)
             print("Master set to 6")    
 
         if new == "All":
@@ -1876,28 +1975,30 @@ class UI:
     def _toggle_plot2d_y_axis(self, attr, old, new): #LibreHub
         if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
             self.plot2d.yaxis.axis_label = f"Channel {self.dropdown_menu[0].value} {new}"
+            self.fpga_data.data2d_y = [int(self.dropdown_menu[0].value), new]
         else:
             self.plot2d.yaxis.axis_label = f"Channel {new} {self.dropdown_menu[1].value}"
+            self.fpga_data.data2d_y = [int(new), self.dropdown_menu[1].value]
         # Check if the updated y-axis label exists in the dictionary
         if self.plot2d.yaxis.axis_label in self.databases_dic_code:
                 a = self.plot2d.yaxis.axis_label
                 b = self.plot2d.xaxis.axis_label
                 # Request data from the database
                 print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}") #(dg)
-                # self.source_2d = {for key in self.database} #(dg)
 
     def _toggle_plot2d_x_axis(self, attr, old, new): #LibreHub
         if any(keyword in new for keyword in ["AUC", "Intensity", "Width"]):
             self.plot2d.xaxis.axis_label = f"Channel {self.dropdown_menu[2].value} {new}"
+            self.fpga_data.data2d_x = [int(self.dropdown_menu[2].value), new]
         else:
             self.plot2d.xaxis.axis_label = f"Channel {new} {self.dropdown_menu[3].value}"
+            self.fpga_data.data2d_x = [int(new), self.dropdown_menu[3].value]
          # Check if the updated x-axis label exists in the dictionary
         if self.plot2d.xaxis.axis_label in self.databases_dic_code:
                 a = self.plot2d.yaxis.axis_label
                 b = self.plot2d.xaxis.axis_label
                 # Request data from the database
                 print(f"Y,X = {self.databases_dic_code[a]}, {self.databases_dic_code[b]}") #(dg)
-                # self.source_2d = {for key in self.database} #(dg)
     
     def _toggle_sub_plot2d_y_axis(self, attr, old, new, plot_id): #LibreHub
         plot_unit = int(plot_id.split("_")[1])
@@ -1932,8 +2033,9 @@ class UI:
                 # self.sub_plots_source[unique_id] = {for key in self.database} #(dg)
 
     def _gain_changed(self, id, attr, old, new):
-        print(id)
-        print(type(new))
+        new_gains = [self.sliders[i].value for i in range(self.fpga_data.num_channels)]
+        print(new_gains)
+        self.fpga_data.set_gain(new_gains)
 
     def _noise_intensity_changed(self, id, attr, old, new):
         self.fpga_data.set_thresh(int(id),new)
@@ -1942,11 +2044,11 @@ class UI:
 
     def _delay_pulse_input(self, attr, old, new):
         #Another module for pulse control?
-        self.fpga_data.set_fpga_register_value("sort_delay", int(new), 0, 1)
+        self.fpga_data.set_fpga_register_value("sort_delay", int(new), 0)
         print("Pulse delay sent to FPGA")
 
     def _duration_pulse_input(self, attr, old, new):
-        self.fpga_data.set_fpga_register_value("sort_duration", int(new), 0, 1)
+        self.fpga_data.set_fpga_register_value("sort_duration", int(new), 0)
         print("Pulse duration sent to FPGA")
 
     def _frequency_pulse_input(self, attr, old, new):
@@ -2064,7 +2166,12 @@ class UI:
         print("Box Select made on original plot")
 
         # Pass box values to the hardware class through the pipe to set gate values
-        self.fpga_data.set_gate_values(dict(new)) #(dg)
+        gate_values = dict(new)
+        gate_values["y_channel"] = int(self.dropdown_menu[0].value)
+        gate_values["y_param"] = self.dropdown_menu[1].value
+        gate_values["x_channel"] = int(self.dropdown_menu[2].value)
+        gate_values["x_param"] = self.dropdown_menu[3].value
+        self.fpga_data.set_gate_values(gate_values) #(dg)
         print("Gate values sent to FPGA")
 
         # Store box values in ui box_select and update box select text
@@ -2125,7 +2232,8 @@ class UI:
         next_plot_id = f"plot_{plot_unit + 1}"
         # Pass box values to the hardware class through the pipe to set gate values
         print(new)
-        self.fpga_data.set_gate_values(dict(new)) #(dg)
+        gate_values = dict(new)
+        self.fpga_data.set_gate_values(gate_values) #(dg)
         print("Gate values sent to FPGA")
 
         # Store box values in ui box_select and update box select text
@@ -2231,9 +2339,13 @@ class UI:
         self.last_droplet_stat[1].value = str(self.fpga_data.update_from_fpga_registers("cur_droplet_width")[0]) #(dg)
         self.last_droplet_stat[2].value = str(self.fpga_data.update_from_fpga_registers("cur_droplet_area")[0]) #(dg)
 
-        # Update sipm data (The following is based on the simulation module)
+        # Update sipm data 
         self.source_SiPM_1.data = self.fpga_data.data["pmt1"] #(dg) 
         self.source_SiPM_2.data = self.fpga_data.data["pmt2"] #(dg)
+        self.source_SiPM_3.data = self.fpga_data.data["pmt3"] #(dg)
+        self.source_SiPM_4.data = self.fpga_data.data["pmt4"] #(dg)
+        self.source_SiPM_5.data = self.fpga_data.data["pmt5"] #(dg)
+        self.source_SiPM_6.data = self.fpga_data.data["pmt6"] #(dg)
 
         # Live scatter data points (The following is based on the simulation module)
         if self.no_update == 0 or self.scatter_toggle.label == "Collecting":
