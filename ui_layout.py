@@ -949,7 +949,7 @@ class UI:
                 "title": "Detector 2 Gain",
                 "bar_color": "royalblue",
                 "margin" : [20, 10, 20, 50],
-                "callback": self._gain_changed,#self._gain2_changed,
+                "callback": self._gain_changed,
                 "disabled" : False,
             },
             { #LibreHub
