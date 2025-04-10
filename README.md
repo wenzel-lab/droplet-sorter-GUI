@@ -11,6 +11,7 @@ Follow us! [#twitter](https://twitter.com/WenzelLab), [#YouTube](https://www.you
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
+- [Interaction Between the User Interface and Red Pitaya](#interaction-between-the-user-interface-and-red-pitaya)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Dependencies](#dependencies)
@@ -30,6 +31,83 @@ Piccolo provides tools for droplet processing instruments. This project provides
 - Display and interact with data across different channels and set sorting gates in a UI
 - Customizable settings for sorting and laser modules
 - Support for multiple detectors and RS232 lasers
+
+---
+
+## Interaction Between the User Interface and Red Pitaya
+This section describes how the graphical interface on the remote PC communicates with the Red Pitaya device to receive data from the FPGA and send configuration parameters.
+
+The system enables bidirectional communication:
+
+- Receiving data via WebSocket from Red Pitaya.
+- Sending data via HTTP POST requests to configure FPGA registers and gain settings.
+
+![Redpitaya - Remote PC Interaction](images/diagram.png)
+
+### Main Components
+
+#### `ui_layout.py` – Graphical User Interface (GUI)
+This script defines the structure and layout of the user interface using interactive widgets. It allows users to:
+
+- Start/stop acquisition processes.
+- Adjust threshold values and gain settings.
+- Define and update classification gates (2D gates on AUC/Width/Intensity).
+- Trigger configuration updates (e.g., set_thresh(), set_gate_values()).
+- Display real-time plots of signals and droplet parameters.
+
+Interaction:
+
+- Calls methods in `DataAcquisition` class (from `data_acquisition.py`) in response to user actions.
+- Automatically updates plots using the shared data updated from Red Pitaya.
+
+#### `data_acquisition.py` – Core Acquisition and Processing Layer
+Acts as the central logic hub that manages both incoming data and outgoing configuration:
+
+- Receives and parses data from `websocket_client.py` with `_acquire_signal()` method, including:
+    - Channel voltages (`voltage_history`)
+    - Feature values: intensity, width, area per droplet
+- Processes data with `_acquire_signal()` method:
+    - Stores values in dictionaries for each PMT channel (e.g., `pmt1`, `pmt2`...).
+    - Calculates and updates 2D density plots via KDE.
+- Updates data from key registers with `update_from_fpga_register()` method.
+- Sends commands to Red Pitaya via `http_client.py`:
+    - Sets thresholds, gates, signal duration, delay, gain.
+    - For the above, uses the methods `set_thresh()`, `set_gain()`, `set_gate_values()` and `set_fpga_register_value()`.
+- Links directly to the GUI: methods are called by `ui_layout.py`.
+
+#### `websocket_client.py` – Data Receiver
+Implements an asynchronous WebSocket client that connects to Red Pitaya’s server (`ws://<ip>:8000/ws`).
+
+- Runs in a background thread.
+- Receives continuous data updates in JSON format.
+- Updates an internal attribute `self.data_received` with:
+    - ADC values per channel
+    - Current droplet ID, intensity, width, area
+    - Droplet classification
+    - Voltage history for active channels
+
+This data is accessed periodically by the `data_acquisition.py` module to update plots and extract features.
+
+**IMPORTANT: before execute the GUI software you have to change the Redpitaya IP address in variable `RP_IP` in `websocket_client.py` script.**
+
+#### `http_client.py` – Configuration and Command Dispatcher
+Handles HTTP requests to the Red Pitaya server (`http://<ip>:8000`):
+
+- `set_fpga_register(data)`: Sets individual FPGA register values.
+- `set_gain(data)`: Updates gain values for the Multiplexer Board.
+- `get_file()`: Downloads a .txt file with logged register events and voltages.
+
+Used internally by data_acquisition.py in response to GUI-triggered actions.
+
+**IMPORTANT: before execute the GUI software you have to change the Redpitaya IP address in variable `RP_IP` in `http_client.py` script.**
+
+### Summary of the Communication Flow
+1. Real-time acquisition:
+    WebSocket transmits data from Red Pitaya → `websocket_client.py` → `data_acquisition.py` → `ui_layout.py` → GUI updates.
+2. Control commands:
+    User interaction in GUI → `ui_layout.py` → `data_acquisition.py` → `http_client.py` → Red Pitaya updates FPGA registers/bias values
+3. Download history:
+    Triggered from the GUI → `ui_layout.py` → `data_acquisition.py` → `http_client.py` → Download .txt file via HTTP → Saved locally.
 
 ---
 
