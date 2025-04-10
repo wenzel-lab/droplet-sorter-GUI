@@ -10,6 +10,7 @@ from websocket_client import WebSocketClient
 from http_client import set_fpga_register, set_gain, get_file
 import time
 
+# Variables received from WebSocket Server (Red Pitaya)
 variables_from_ws = {
     "min_intensity_thresh": [], # x6
     "low_intensity_thresh": [], # x6
@@ -38,6 +39,7 @@ variables_from_ws = {
     "cur_adc_data": [] #x6
 }
 
+# FPGA register addresses for write operations
 variables_to_modify = {
     "min_intensity_thresh": ["0x01000", "0x01004", "0x01008", "0x0100c", "0x01010", "0x01014"],
     "low_intensity_thresh": ["0x01020", "0x01024", "0x01028", "0x0102c", "0x01030", "0x01034"],
@@ -57,8 +59,19 @@ variables_to_modify = {
 }
 
 class DataAcquisition:
+    """"
+    Class responsible for acquiring, processing, and analyzing PMT signals
+    in a droplet-based microfluidic classification system. It interfaces with a WebSocket client
+    to receive streaming data and updates FPGA parameters via HTTP.
+
+    Attributes:
+        data: Dictionary containing time (x) and voltage (y) values for each PMT channel.
+        data2d: Dictionary containing 2D data (x, y, and density) for scatter plots.
+        ws_client: Instance of WebSocketClient that fetches data from Red Pitaya.
+    """
+
     NUM_CHANNELS = 6
-    SAMPLING_INTERVAL = 0.02  # time units in ms
+    SAMPLING_INTERVAL = 0.02  # ms
     SIGNAL_DURATION = 50
     BASELINE = 0.01
     DROP_INTERVAL = 1
@@ -68,9 +81,9 @@ class DataAcquisition:
     MIN_WIDTH = 0.1
     MAX_WIDTH = 1
 
-    """ Initialization """
-
     def __init__(self,num_channels=NUM_CHANNELS):
+        """Initializes buffers, WebSocket connection, and sets default FPGA values"""
+
         self.data = {"pmt1": {"x": [0], "y": [0]}, "pmt2": {"x": [0], "y": [0]}, 
                      "pmt3": {"x": [0], "y": [0]}, "pmt4": {"x": [0], "y": [0]}, 
                      "pmt5": {"x": [0], "y": [0]}, "pmt6": {"x": [0], "y": [0]}}
@@ -85,11 +98,11 @@ class DataAcquisition:
         self.num_channels = num_channels
 
         self.ws_client = WebSocketClient() 
-        self.ws_client.start()  # Inicia el cliente WebSocket en un hilo
+        # Starts the websocket client in a thread
+        self.ws_client.start()  
 
         self.vars_from_ws = variables_from_ws
         self.set_fpga_register_value("signal_duration", 50, 0)
-        #self.set_fpga_register_value("enabled_channels", enabled_channels, 0)
 
         self.results = {
             "channel": [],
@@ -101,29 +114,31 @@ class DataAcquisition:
     """ Start, Stop, Continue Methods to Run in the Background """
 
     def start_acquisition(self):
+        """Starts the acquisition loop in a background thread"""
         self._generate = True
         self._thread = threading.Thread(target=self._continue_acquisition)
         self._thread.start()
 
     def stop_acquisition(self):
+        """Stops the acquisition loop and joins the background thread"""
         self._generate = False
 
         if hasattr(self, "_thread"):
             self._thread.join()
 
     def _continue_acquisition(self):
+        """Continuously acquires new data until stopped"""
         while True:
             if not self._generate:
                 return
             self._acquire_signal()
             time.sleep(0.1)
 
-    """ Generate Test PMT Signals """
-
     def _acquire_signal(
         self,
         num_channels=NUM_CHANNELS,
     ):  
+        """Processes signal and extracts features if data has been received"""
 
         if self.ws_client.data_received:
 
@@ -142,7 +157,6 @@ class DataAcquisition:
                 else:
                     self.data[f"pmt{channel_idx}"] = {"x": [0], "y": [0]}
 
-
             # 2D plot
             for channel in range(1, num_channels+1):
                 auc = self.ws_client.data_received["cur_droplet_area"][channel-1]
@@ -152,46 +166,6 @@ class DataAcquisition:
                 self.results["AUC"].append(auc * 1e6)
                 self.results["Intensity"].append(intensity * 1e6)
                 self.results["Width"].append(width * 1e6)
-
-            # Calculate density measurement for the density scatter plot
-            # auc_1 = [
-            #     self.results["auc"][i]
-            #     for i, channel_value in enumerate(self.results["channel"])
-            #     if channel_value == 1
-            # ]
-            # auc_2 = [
-            #     self.results["auc"][i]
-            #     for i, channel_value in enumerate(self.results["channel"])
-            #     if channel_value == 2
-            # ]
-            # auc_3 = [
-            #     self.results["auc"][i]
-            #     for i, channel_value in enumerate(self.results["channel"])
-            #     if channel_value == 3
-            # ]
-            # auc_4 = [
-            #     self.results["auc"][i]
-            #     for i, channel_value in enumerate(self.results["channel"])
-            #     if channel_value == 4
-            # ]
-            # auc_5 = [
-            #     self.results["auc"][i]
-            #     for i, channel_value in enumerate(self.results["channel"])
-            #     if channel_value == 5
-            # ]
-            # auc_6 = [
-            #     self.results["auc"][i]
-            #     for i, channel_value in enumerate(self.results["channel"])
-            #     if channel_value == 6
-            # ]
-
-            # Locate auc values that are zero and give them a negligible, non-zero value
-            # auc_1 = [x if x > 0 else 0.001 for x in auc_1]
-            # auc_2 = [x if x > 0 else 0.001 for x in auc_2]
-            # auc_3 = [x if x > 0 else 0.001 for x in auc_2]
-            # auc_4 = [x if x > 0 else 0.001 for x in auc_2]
-            # auc_5 = [x if x > 0 else 0.001 for x in auc_2]
-            # auc_6 = [x if x > 0 else 0.001 for x in auc_2]
 
             XX = [
                 self.results[f"{self.data2d_x[1]}"][i]
@@ -207,13 +181,6 @@ class DataAcquisition:
 
             XX = [x if x > 0 else 0.001 for x in XX]
             YY = [x if x > 0 else 0.001 for x in YY]
-            
-
-            # if np.size(auc_1) > 2:
-            #     xy = np.vstack([np.log(auc_1), np.log(auc_2)])
-            #     xy += np.random.normal(0, 1e-6, xy.shape)
-            #     density = gaussian_kde(xy)(xy)
-            #     self.data2d = {"x": auc_1, "y": auc_2, "density": density}
 
             if np.size(XX) > 2:
                 if np.size(XX)==np.size(YY):
@@ -222,20 +189,22 @@ class DataAcquisition:
                     density = gaussian_kde(xy)(xy)
                     self.data2d = {"x": XX, "y": YY, "density": density}
 
-            
 
     """ Set/Update hardware values based on UI callbacks """
 
     def set_gain(self, gains):
+        """Sends gain values to the FPGA via HTTP client"""
         data_to_send = {"values": gains}
         set_gain(data_to_send)
 
     def set_thresh(self, id, value):
+        """Converts a threshold value and updates FPGA register"""
         digital_value = int((value-(6.1e-5))/(1.22e-4))
         self.set_fpga_register_value("min_intensity_thresh", digital_value, 1, addr=id-1)
         self.thresh = value
 
     def set_gate_values(self, values):
+        """Updates gate thresholds for a 2D parameter-based classification region"""
         self.gate_val = values
         ychannel = self.gate_val["y_channel"]
         yparam = self.gate_val["y_param"]
@@ -277,6 +246,7 @@ class DataAcquisition:
         print(f"Gate values set {self.gate_val}")
 
     def set_fpga_register_value(self, var_name, value, signed, addr=0):
+        """Writes a value to an FPGA register via HTTP"""
         if isinstance(variables_to_modify[var_name],list):
             data_to_send = {"offset": variables_to_modify[var_name][addr], "value": value, "signed": signed}
             print(data_to_send)
@@ -285,8 +255,10 @@ class DataAcquisition:
         set_fpga_register(data_to_send)
 
     def update_from_fpga_registers(self, var_name):
+        """Returns the latest value received from a specific FPGA register"""
         register_value = self.ws_client.data_received[var_name]
         return register_value
     
     def get_file_history(self):
+        """Downloads the current history file from the FPGA system"""
         get_file()
