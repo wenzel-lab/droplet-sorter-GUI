@@ -63,63 +63,83 @@ Interaction:
 The following indicates in which specific parts of ui_layout.py the methods of data_acquisition.py are called to update or modify certain variables and parameters. The name of the variable associated to the corresponding registers is also indicated (for details, see table presented in `Register Variables Description` section of the [`droplet-sorting-FPGA-controller`](https://github.com/wenzel-lab/droplet-sorting-FPGA-controller/tree/monitoring-logger) README document).
 
 1.  Voltage values for each detector channel - `adc_values` or `cur_adc_data`
+
 Signal shown in 1D plot in Detector Settings section, calling the method `update_ui` of `UI` class. This method calls internally to `data` attribute of `DataAcquisition` class.
 
 2. Correlation density values between channel parameters - not from FPGA registers but obtained from processing in `_acquire_signal` method
+
 Points shown in 2D plot in Gating section, calling the method `update_ui` of `UI` class. This method calls internally to `data2d` attribute of `DataAcquisition` class.
 
 3. Noise peak threshold for detectors - `min_intensity_thresh`
+
 Noise signal sliders in Detector Settings section, calling the method `_noise_intensity_changed` of `UI` class. This method calls internally to `set_thresh` method of `DataAcquisition` class.
 
 4. Lower peak intensity threshold for droplets - `low_intensity_thresh`
+
 Box select in 2D plot in Gating section, calling the method `_boxselect_pass` of `UI` class. This method calls internally to `set_gate_values` method of `DataAcquisition` class.
 
 5. Maximum peak intensity threshold for droplets - `high_intensity_thresh`
+
 Box select in 2D plot in Gating section, calling the method `_boxselect_pass` of `UI` class. This method calls internally to `set_gate_values` method of `DataAcquisition` class.
 
 6. Noise (width = hwfm) threshold for detectors - `min_width_thresh`
+
 Noise boxes (to the right of noise signal sliders) in Detector Settings section, calling the method `_width_noise_input` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 7. Lower peak width threshold for droplets - `low_width_thresh`
+
 Box select in 2D plot in Gating section, calling the method `_boxselect_pass` of `UI` class. This method calls internally to `set_gate_values` method of `DataAcquisition` class.
 
 8. Maximum peak width threshold for droplets - `high_width_thresh`
+
 Box select in 2D plot in Gating section, calling the method `_boxselect_pass` of `UI` class. This method calls internally to `set_gate_values` method of `DataAcquisition` class.
 
 9. Noise for area under the curve (auc) threshold for detectors - `min_area_thresh`
+
 Noise boxes (to the right of noise signal sliders) in Detector Settings section, calling the method `_auc_noise_input` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 10. Lower auc threshold for droplets - `low_area_thresh`
+
 Box select in 2D plot in Gating section, calling the method `_boxselect_pass` of `UI` class. This method calls internally to `set_gate_values` method of `DataAcquisition` class.
 
 11. Maximum auc threshold for droplets - `high_area_thresh`
+
 Box select in 2D plot in Gating section, calling the method `_boxselect_pass` of `UI` class. This method calls internally to `set_gate_values` method of `DataAcquisition` class.
 
 12. Reset experiment - `fads_reset`
+
 Reset button in Gating section, calling the method `_reset_button_clicked` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 13. Sort delay - `sort_delay`
+
 Delay box in Sorting section, calling the method `_delay_pulse_input` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 14. Sort duration - `sort_duration`
+
 Pulse Duration box in Sorting section, calling the method `_duration_pulse_input` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 15. Enable/Disable detectors - `enabled_channels`
+
 Enable/Disable buttons in Detector Settings section, calling the method `_toggle_sensor` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 16. Master detector - `droplet_sensing_addr`
+
 Master detector selection in Detector Settings section, calling the method `_toggle_master_channel` of `UI` class. This method calls internally to `set_fpga_register_value` method of `DataAcquisition` class.
 
 17. Peak intensity data of last completed droplet - `cur_droplet_intensity`
+
 cur_droplet_intensity box in Gating section, calling the method `update_ui` of `UI` class. This method calls internally to `update_from_fpga_registers` method of `DataAcquisition` class.
 
 18. Width (fwhm) data of last completed droplet - `cur_droplet_width`
+
 cur_droplet_width box in Gating section, calling the method `update_ui` of `UI` class. This method calls internally to `update_from_fpga_registers` method of `DataAcquisition` class.
 
 19. AUC data of last completed droplet - `cur_droplet_area`
+
 cur_droplet_area box in Gating section, calling the method `update_ui` of `UI` class. This method calls internally to `update_from_fpga_registers` method of `DataAcquisition` class.
 
 20. Multiplexer bias voltage for detectors - not saved in FPGA registers but in Redpitaya procesor
+
 Detector Gain signal sliders in Detector Settings section, calling the method `_gain_changed` of `UI` class. This method calls internally to `set_gain` method of `DataAcquisition` class.
 
 
